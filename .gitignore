@@ -15,3 +15,6 @@ model/eval_out.json
 Thumbs.db
 .idea/
 .vscode/
+
+# ingested data vintages are reproducible, keep the manifest and normalised CSVs
+model/data/vintages/*/raw/

@@ -1,0 +1,143 @@
+{
+ "cpi": {
+  "source": "ons",
+  "locator": [
+   "d7g7",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": 2.8
+ },
+ "p": {
+  "source": "ons",
+  "locator": [
+   "d7bt",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 154,
+  "first": "1988Q1",
+  "last": "2026Q2",
+  "last_value": 142.3
+ },
+ "food": {
+  "source": "ons",
+  "locator": [
+   "d7g8",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": 2.3
+ },
+ "serv": {
+  "source": "ons",
+  "locator": [
+   "d7nn",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": 3.5
+ },
+ "g": {
+  "source": "ons",
+  "locator": [
+   "ihyq",
+   "pn2",
+   "economy/grossdomesticproductgdp"
+  ],
+  "n": 285,
+  "first": "1955Q2",
+  "last": "2026Q2",
+  "last_value": 0.4
+ },
+ "u": {
+  "source": "ons",
+  "locator": [
+   "mgsx",
+   "lms",
+   "employmentandlabourmarket/peoplenotinwork/unemployment"
+  ],
+  "n": 222,
+  "first": "1971Q1",
+  "last": "2026Q2",
+  "last_value": 4.9
+ },
+ "pay": {
+  "source": "ons",
+  "locator": [
+   "kai9",
+   "lms",
+   "employmentandlabourmarket/peopleinwork/earningsandworkinghours"
+  ],
+  "n": 102,
+  "first": "2001Q1",
+  "last": "2026Q2",
+  "last_value": 3.5
+ },
+ "inact": {
+  "source": "ons",
+  "locator": [
+   "lf2s",
+   "lms",
+   "employmentandlabourmarket/peoplenotinwork/economicinactivity"
+  ],
+  "n": 222,
+  "first": "1971Q1",
+  "last": "2026Q2",
+  "last_value": 20.9
+ },
+ "i": {
+  "source": "boe",
+  "locator": [
+   "IUQABEDR"
+  ],
+  "n": 206,
+  "first": "1975Q1",
+  "last": "2026Q2",
+  "last_value": 3.75
+ },
+ "eri": {
+  "source": "boe",
+  "locator": [
+   "XUQLBK67"
+  ],
+  "n": 146,
+  "first": "1990Q1",
+  "last": "2026Q2",
+  "last_value": 84.8767
+ },
+ "usdgbp": {
+  "source": "boe",
+  "locator": [
+   "XUQLUSS"
+  ],
+  "n": 206,
+  "first": "1975Q1",
+  "last": "2026Q2",
+  "last_value": 1.3273
+ },
+ "oil": {
+  "source": "fred",
+  "locator": [
+   "DCOILBRENTEU"
+  ],
+  "n": 158,
+  "first": "1987Q2",
+  "last": "2026Q3",
+  "last_value": 94.15677966101696
+ },
+ "_meta": {
+  "fetched": "2026-09-24T16:44:36",
+  "ok": 12,
+  "failed": 0
+ }
+}
