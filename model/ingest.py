@@ -26,6 +26,7 @@ ONS = {   # name: (series id, dataset, topic path)
     'pay'   : ('kai9', 'lms',  'employmentandlabourmarket/peopleinwork/earningsandworkinghours'),
     'inact' : ('lf2s', 'lms',  'employmentandlabourmarket/peoplenotinwork/economicinactivity'),
     'he_yoy': ('d7gt', 'mm23', 'economy/inflationandpriceindices'),   # household energy: CPI 04.5 electricity, gas and other fuels, annual rate
+    'cpih'  : ('l55o', 'mm23', 'economy/inflationandpriceindices'),   # CPIH annual rate, for the CPIH-CPI gap used in the RPI build-up
 }
 BOE  = {'i': 'IUQABEDR', 'eri': 'XUQLBK67', 'usdgbp': 'XUQLUSS'}
 FRED = {'oil': 'DCOILBRENTEU'}

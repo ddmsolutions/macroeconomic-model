@@ -12,9 +12,10 @@ A straight overwrite deletes both sets silently. A shallow merge saves the first
 still loses the second. So the merge recurses: export values win at the leaves, and any
 key the exports do not generate survives at whatever depth it sits.
 
-An object is skipped entirely if merging it would leave sibling arrays of unequal
-length, which happens when an export regenerates some arrays but not an orphan
-alongside them. Publishing that breaks the page at runtime even though the JSON parses.
+An object is skipped entirely if the export rewrites some parallel arrays but leaves an
+orphan array beside them at a different length. The page then iterates the new length and
+indexes past the end of the stale one, which breaks at runtime even though the JSON parses.
+Unrelated arrays of different lengths in the same object are fine and are not flagged.
 
     python build_html.py            write index.html, keeping a .bak
     python build_html.py --dry-run  report what would change and touch nothing
@@ -43,21 +44,31 @@ def orphans(cur, new, path=''):
         else: out.extend(orphans(cur[k], new[k], p))
     return sorted(out)
 
-def ragged(obj, path=''):
-    """Sibling arrays under one parent that used to be uniform length and now are not.
+def coupling_risk(cur, new, path=''):
+    """Orphan arrays left at a stale length beside arrays the export rewrote.
 
-    RQ.hist is the case this exists for: the export writes q, rpi, mip, rpix at one
-    length, but hist.cpi has no generating script and stays at whatever length it had.
-    Merging then leaves the page indexing past the end of cpi. Better to refuse the
-    update and say so than to publish a broken chart.
+    The real hazard is narrow: within one object the export regenerates some parallel
+    arrays and not an orphan sitting alongside them, so the page iterates the new length
+    and indexes past the end of the old one. That is the RQ.hist case, where q, rpi, mip
+    and rpix came back at 12 while hist.cpi stayed at 6.
+
+    Two unrelated arrays of different length in the same object are not a problem and must
+    not be flagged, or the check blocks harmless writes (ihist at 36 beside a three-element
+    range, for instance). So this only fires when an orphan array's length differs from the
+    lengths of the arrays that WERE rewritten in the same object.
     """
     bad = []
-    if not isinstance(obj, dict): return bad
-    lens = {k: len(v) for k, v in obj.items() if isinstance(v, list)}
-    if len(set(lens.values())) > 1:
-        bad.append('%s {%s}' % (path or '<root>', ', '.join('%s:%d' % kv for kv in sorted(lens.items()))))
-    for k, v in obj.items():
-        bad.extend(ragged(v, '%s.%s' % (path, k) if path else k))
+    if not isinstance(cur, dict) or not isinstance(new, dict): return bad
+    rewritten = {k: len(v) for k, v in new.items() if isinstance(v, list) and k in cur}
+    orphans_  = {k: len(v) for k, v in cur.items() if isinstance(v, list) and k not in new}
+    if rewritten and orphans_:
+        sizes = set(rewritten.values())
+        for k, n in orphans_.items():
+            if n not in sizes:
+                bad.append('%s: %s stays at %d while %s rewritten to %s'
+                           % (path or '<root>', k, n, ', '.join(sorted(rewritten)), '/'.join(str(x) for x in sorted(sizes))))
+    for k in set(cur) & set(new):
+        bad.extend(coupling_risk(cur[k], new[k], '%s.%s' % (path, k) if path else k))
     return bad
 
 def find_object(text, name):
@@ -98,11 +109,10 @@ def main(dry=False):
         changed   = sorted(k for k in set(cur) & set(new) if cur[k] != new[k])
         merged = deep_merge(cur, new)
         kept = orphans(cur, new)
-        before, after = ragged(cur), ragged(merged)
-        introduced = [r for r in after if r not in before]
-        if introduced:
-            report.append((name, 'SKIP', 'merge would leave mismatched array lengths, not written: %s'
-                           % '; '.join(introduced)))
+        risk = coupling_risk(cur, new)
+        if risk:
+            report.append((name, 'SKIP', 'stale orphan array alongside rewritten ones, not written: %s'
+                           % '; '.join(risk)))
             continue
         text = text[:s] + json.dumps(merged, separators=(',', ':')) + text[e:]
         report.append((name, 'OK', 'updated %d, added %d, preserved %d  %s'
