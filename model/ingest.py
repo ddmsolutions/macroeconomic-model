@@ -27,9 +27,20 @@ ONS = {   # name: (series id, dataset, topic path)
     'inact' : ('lf2s', 'lms',  'employmentandlabourmarket/peoplenotinwork/economicinactivity'),
     'he_yoy': ('d7gt', 'mm23', 'economy/inflationandpriceindices'),   # household energy: CPI 04.5 electricity, gas and other fuels, annual rate
     'cpih'  : ('l55o', 'mm23', 'economy/inflationandpriceindices'),   # CPIH annual rate, for the CPIH-CPI gap used in the RPI build-up
+    'elec'  : ('d7i7', 'mm23', 'economy/inflationandpriceindices'),   # CPI 04.5.1 electricity, annual rate
+    'gas_r' : ('d7i8', 'mm23', 'economy/inflationandpriceindices'),   # CPI 04.5.2 gas, annual rate
+    'fuel'  : ('d7io', 'mm23', 'economy/inflationandpriceindices'),   # CPI 07.2.2 fuels and lubricants: petrol and diesel at the pump
 }
 BOE  = {'i': 'IUQABEDR', 'eri': 'XUQLBK67', 'usdgbp': 'XUQLUSS'}
-FRED = {'oil': 'DCOILBRENTEU'}
+FRED = {
+    'oil'    : 'DCOILBRENTEU',     # Brent, daily
+    'gas_eu' : 'PNGASEUUSDM',      # European natural gas, USD per mmbtu, monthly. The wholesale
+                                   # input behind the Ofgem cap and so behind UK household energy.
+}
+LBMA = {                            # London bullion fixes, {USD, GBP, EUR}; GBP is what a UK model wants
+    'gold'   : ('gold_pm', 1),
+    'silver' : ('silver', 1),
+}
 
 def _get(url, timeout=40):
     req = urllib.request.Request(url, headers=UA)
@@ -79,6 +90,19 @@ def fetch_fred(sid):
         except ValueError: pass
     return [(q, sum(v) / len(v), '') for q, v in sorted(b.items())], raw
 
+def fetch_lbma(name, col):
+    """LBMA daily fix, aggregated to quarterly means. v is [USD, GBP, EUR]."""
+    raw = _get('https://prices.lbma.org.uk/json/%s.json' % name)
+    rows = json.loads(raw); b = {}
+    for o in rows:
+        try:
+            v = o['v'][col]
+            if v in (None, ''): continue
+            d = dt.datetime.strptime(o['d'], '%Y-%m-%d')
+            b.setdefault('%dQ%d' % (d.year, (d.month - 1) // 3 + 1), []).append(float(v))
+        except (ValueError, KeyError, TypeError, IndexError): pass
+    return [(q, sum(v) / len(v), '') for q, v in sorted(b.items())], raw
+
 def run(rebuild_panel=False, stamp=None):
     stamp = stamp or dt.date.today().isoformat()
     vdir = os.path.join(VDIR, stamp)
@@ -88,14 +112,15 @@ def run(rebuild_panel=False, stamp=None):
     manifest, ok, bad = {}, 0, 0
     jobs = ([(n, 'ons', a) for n, a in ONS.items()] +
             [(n, 'boe', (c,)) for n, c in BOE.items()] +
-            [(n, 'fred', (c,)) for n, c in FRED.items()])
+            [(n, 'fred', (c,)) for n, c in FRED.items()] +
+            [(n, 'lbma', a) for n, a in LBMA.items()])
     for name, src, args in jobs:
         try:
-            rows, raw = {'ons': fetch_ons, 'boe': fetch_boe, 'fred': fetch_fred}[src](*args)
+            rows, raw = {'ons': fetch_ons, 'boe': fetch_boe, 'fred': fetch_fred, 'lbma': fetch_lbma}[src](*args)
             if not rows: raise ValueError('no observations parsed')
             with open(os.path.join(vdir, name + '.csv'), 'w', newline='') as f:
                 w = csv.writer(f); w.writerow(['period', 'value', 'updated']); w.writerows(rows)
-            with open(os.path.join(vdir, 'raw', '%s.%s' % (name, 'json' if src == 'ons' else 'csv')), 'w', encoding='utf-8') as f:
+            with open(os.path.join(vdir, 'raw', '%s.%s' % (name, 'json' if src in ('ons', 'lbma') else 'csv')), 'w', encoding='utf-8') as f:
                 f.write(raw)
             manifest[name] = {'source': src, 'locator': list(args), 'n': len(rows),
                               'first': rows[0][0], 'last': rows[-1][0], 'last_value': rows[-1][1]}

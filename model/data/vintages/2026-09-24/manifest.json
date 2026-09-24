@@ -119,6 +119,42 @@
   "last": "2026Q2",
   "last_value": 2.9
  },
+ "elec": {
+  "source": "ons",
+  "locator": [
+   "d7i7",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": -5.6
+ },
+ "gas_r": {
+  "source": "ons",
+  "locator": [
+   "d7i8",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": -13.1
+ },
+ "fuel": {
+  "source": "ons",
+  "locator": [
+   "d7io",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": 23.0
+ },
  "i": {
   "source": "boe",
   "locator": [
@@ -159,9 +195,41 @@
   "last": "2026Q3",
   "last_value": 94.15677966101696
  },
+ "gas_eu": {
+  "source": "fred",
+  "locator": [
+   "PNGASEUUSDM"
+  ],
+  "n": 139,
+  "first": "1992Q1",
+  "last": "2026Q3",
+  "last_value": 17.93
+ },
+ "gold": {
+  "source": "lbma",
+  "locator": [
+   "gold_pm",
+   1
+  ],
+  "n": 234,
+  "first": "1968Q2",
+  "last": "2026Q3",
+  "last_value": 3169.8363333333336
+ },
+ "silver": {
+  "source": "lbma",
+  "locator": [
+   "silver",
+   1
+  ],
+  "n": 235,
+  "first": "1968Q1",
+  "last": "2026Q3",
+  "last_value": 46.523666666666664
+ },
  "_meta": {
-  "fetched": "2026-09-24T19:14:50",
-  "ok": 14,
+  "fetched": "2026-09-24T21:14:07",
+  "ok": 20,
   "failed": 0
  }
 }
