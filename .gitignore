@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Generated intermediates (rebuild with the pipeline in README)
+model/eval_out.json
+
+# Tooling
+.vercel
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

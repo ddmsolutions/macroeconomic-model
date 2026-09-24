@@ -1,0 +1,1272 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="UK macroeconomic model: indicators, outlook to 2030, scenario lab, households, long run to 2040, party platforms and accuracy report.">
+<title>UK Macro Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --ground:#F4F6F7; --surface:#FFFFFF; --ink:#15202A; --muted:#5A6672; --line:#DCE2E6; --soft:#EAEFF1;
+  --accent:#1E5E57; --accent-soft:#DCEBE8; --scen:#B0532A; --band:#8A96A1;
+  --good:#2F7A45; --good-bg:#E1F0E5; --warn:#9A6A12; --warn-bg:#F6ECD6; --bad:#A83A2E; --bad-bg:#F6E0DC;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --serif:"IBM Plex Serif",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F1418; --surface:#161D22; --ink:#E2E8EC; --muted:#93A0AA; --line:#2A343B; --soft:#1D262C;
+    --accent:#6DB3A7; --accent-soft:#1D3431; --scen:#E08A5F; --band:#7D8A94;
+    --good:#78C28C; --good-bg:#1B2E22; --warn:#D9AE5B; --warn-bg:#2E2718; --bad:#E48A7D; --bad-bg:#35201D;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F1418; --surface:#161D22; --ink:#E2E8EC; --muted:#93A0AA; --line:#2A343B; --soft:#1D262C;
+  --accent:#6DB3A7; --accent-soft:#1D3431; --scen:#E08A5F; --band:#7D8A94;
+  --good:#78C28C; --good-bg:#1B2E22; --warn:#D9AE5B; --warn-bg:#2E2718; --bad:#E48A7D; --bad-bg:#35201D;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:20px 48px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;border-bottom:1px solid var(--line);padding-bottom:14px}
+h1{font-family:var(--serif);font-weight:600;font-size:26px;margin:0;letter-spacing:-.01em}
+.asof{font-family:var(--mono);font-size:12px;color:var(--muted)}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin:16px 0 20px}
+nav button{font:500 13px var(--sans);color:var(--muted);background:transparent;border:1px solid transparent;border-radius:6px;padding:7px 14px;cursor:pointer}
+nav button:hover{color:var(--ink);background:var(--soft)}
+nav button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h2{font-family:var(--serif);font-weight:600;font-size:19px;margin:0 0 4px;text-wrap:balance}
+h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+p{margin:0 0 10px;max-width:70ch}
+.lede{color:var(--muted);margin-bottom:18px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.tile .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.tile .v{font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.02em}
+.tile .d{font-size:13px;color:var(--muted)}
+.tile .src{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:auto;padding-top:6px}
+.pill{display:inline-block;font:600 11px var(--sans);letter-spacing:.03em;padding:2px 8px;border-radius:99px;text-transform:uppercase}
+.pill.good{color:var(--good);background:var(--good-bg)}
+.pill.warn{color:var(--warn);background:var(--warn-bg)}
+.pill.bad{color:var(--bad);background:var(--bad-bg)}
+.pill.neu{color:var(--muted);background:var(--soft)}
+.section{margin-top:28px}
+.read{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.read p:last-child{margin-bottom:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.chartbox{position:relative;height:210px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:10px}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+td.num,th.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.up{color:var(--bad)} .dn{color:var(--good)}
+.sgrid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px;align-items:start}
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button{font:500 12px var(--sans);border:1px solid var(--line);background:var(--ground);color:var(--ink);border-radius:6px;padding:5px 9px;cursor:pointer}
+.presets button:hover{border-color:var(--accent);color:var(--accent)}
+.presets button.on{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:500}
+.ctl label output{font-family:var(--mono);color:var(--accent);font-weight:500}
+.ctl small{color:var(--muted);font-size:12px;line-height:1.35}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,input[type=number]{font:13px var(--sans);color:var(--ink);background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.group{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:12px}
+.note{font-size:12px;color:var(--muted)}
+.presetgrp{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.presetgrp>span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.presetnote{font-size:12.5px;color:var(--ink);background:var(--soft);border-radius:6px;padding:8px 10px;margin:10px 0 0;line-height:1.4}
+.linkbtn{font:500 12px var(--sans);color:var(--accent);background:none;border:0;padding:2px 0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+details.lg{border-top:1px solid var(--line);padding-top:10px}
+details.lg summary{cursor:pointer;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.lg summary::-webkit-details-marker{display:none}
+details.lg summary::after{content:"+";font:500 15px var(--mono);color:var(--muted)}
+details.lg[open] summary::after{content:"\2212"}
+details.lg summary .cnt{margin-left:auto;margin-right:10px;font:500 11px var(--mono);color:var(--scen);text-transform:none;letter-spacing:0}
+details.lg .body{display:flex;flex-direction:column;gap:12px;padding-top:12px;padding-bottom:4px}
+.ctl.changed label{color:var(--scen)}
+.controls{max-height:calc(100vh - 24px);overflow-y:auto}
+@media (max-width:900px){.controls{max-height:none}}
+
+.sector td:first-child{white-space:normal;min-width:180px}
+.bar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle}
+.mech code{font-family:var(--mono);font-size:12.5px;background:var(--soft);padding:1px 5px;border-radius:4px}
+.mech li{margin-bottom:6px;max-width:80ch}
+.srclist a{color:var(--accent)}
+.srclist li{margin-bottom:4px}
+@media (max-width:900px){.sgrid{grid-template-columns:1fr}.controls{position:static}.grid3{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.grid2,.grid3{grid-template-columns:1fr}.wrap{padding-inline:16px}h1{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>html{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <h1>UK Macro Model</h1>
+  <span class="asof">Data as at 24 Sep 2026 · estimated quarterly model, 1993–2026</span>
+</header>
+
+<nav role="tablist" aria-label="Views">
+  <button role="tab" id="tab-now" aria-selected="true" data-view="now">Now</button>
+  <button role="tab" id="tab-outlook" aria-selected="false" data-view="outlook">Outlook to 2030</button>
+  <button role="tab" id="tab-scen" aria-selected="false" data-view="scen">Scenario lab</button>
+  <button role="tab" id="tab-biz" aria-selected="false" data-view="biz">Business lens</button>
+  <button role="tab" id="tab-hh" aria-selected="false" data-view="hh">Households</button>
+  <button role="tab" id="tab-lr" aria-selected="false" data-view="lr">Long run</button>
+  <button role="tab" id="tab-parties" aria-selected="false" data-view="parties">Party platforms</button>
+  <button role="tab" id="tab-acc" aria-selected="false" data-view="acc">Accuracy</button>
+  <button role="tab" id="tab-notes" aria-selected="false" data-view="notes">Method and sources</button>
+</nav>
+
+<!-- NOW -->
+<section id="view-now" data-panel>
+  <h2>Where the economy stands</h2>
+  <p class="lede">Latest official releases. An energy shock from the Middle East conflict is lifting inflation again just as the labour market softens.</p>
+  <div class="tiles">
+    <div class="tile"><span class="k">Real GDP, Q2 2026</span><span class="v">+0.4%</span><span class="d">q/q, after +0.6% in Q1. +1.2% y/y. Services +0.5%, production flat.</span><span class="src">ONS, 13 Aug 2026</span></div>
+    <div class="tile"><span class="k">CPI inflation, Aug</span><span class="v">3.1%</span><span class="d">Up from 2.9% in July, motor fuels the main driver. Services 3.4%, CPIH 3.3%.</span><span class="src">ONS, 16 Sep 2026</span></div>
+    <div class="tile"><span class="k">Bank Rate</span><span class="v">3.75%</span><span class="d">Held 6–3 on 17 Sep; Greene, Mann, Pill voted for 4%. Next decision 5 Nov.</span><span class="src">Bank of England</span></div>
+    <div class="tile"><span class="k">Unemployment, May–Jul</span><span class="v">4.9%</span><span class="d">+0.2pp on the year. Payrolled employees −145k y/y (Aug flash). Vacancies 702k.</span><span class="src">ONS, Sep 2026</span></div>
+    <div class="tile"><span class="k">Pay growth, 3m to Jul</span><span class="v">3.9%</span><span class="d">Total pay; regular 3.5%. Private sector 2.9%. Real regular pay +0.7%.</span><span class="src">ONS via Commons Library</span></div>
+    <div class="tile"><span class="k">Borrowing, Apr–Aug</span><span class="v">£77.3bn</span><span class="d">£8.1bn above the OBR March profile. August alone £18.3bn.</span><span class="src">ONS, 22 Sep 2026</span></div>
+    <div class="tile"><span class="k">Net debt, end Aug</span><span class="v">93.8%</span><span class="d">of GDP (PSND ex banks), about £2,986bn. OBR sees a peak near 96½% in 2028-29.</span><span class="src">ONS; OBR March 2026</span></div>
+    <div class="tile"><span class="k">Brent crude</span><span class="v">$101.6</span><span class="d">23 Sep, up about 47% on a year ago. Strait of Hormuz disruption continuing.</span><span class="src">Trading Economics</span></div>
+    <div class="tile"><span class="k">Ofgem price cap</span><span class="v">£1,935</span><span class="d">From 1 Oct, up 4% after a 13% rise in July. January 2027 cap not yet set.</span><span class="src">Ofgem, Aug 2026</span></div>
+    <div class="tile"><span class="k">GDP nowcast, Q3 2026</span><span class="v">+0.5%</span><span class="d">July GDP +0.4% m/m leaves Q3 on course for about 0.6% if August and September hold; the September flash PMI (51.7) points to about 0.3%. Weighted two-thirds to the hard data.</span><span class="src">ONS, 12 Sep; S&amp;P Global, 23 Sep 2026</span></div>
+    <div class="tile"><span class="k">Market-implied Bank Rate</span><span class="v">~4.2%</span><span class="d">by mid-2027. About a 65% chance of a November hike priced (21 Sep). The central path now starts from market pricing.</span><span class="src">Money markets via XTB, 21 Sep 2026</span></div>
+    <div class="tile"><span class="k">Fiscal headroom, 2029-30</span><span class="v">£8–15bn</span><span class="d">Independent September estimates, down from £23.6bn in the OBR's March forecast. Budget on 28 October.</span><span class="src">Resolution Foundation, KPMG, RSM, Bloomberg; OBR</span></div>
+    <div class="tile"><span class="k">Inactive, long-term sick</span><span class="v">2.78m</span><span class="d">People aged 16 to 64, flat on the year after a rise of about 700,000 since 2019. Inactivity rate 20.9%.</span><span class="src">ONS, 15 Sep 2026</span></div>
+    <div class="tile"><span class="k">Current account</span><span class="v">−2.8%</span><span class="d">of GDP in Q1 2026, after −3.1% in 2025. Energy is a net import, so dearer oil widens it.</span><span class="src">ONS balance of payments</span></div>
+    <div class="tile"><span class="k">10-year gilt</span><span class="v">~5.3%</span><span class="d">5.28% on 2 Sep; 30-year 5.90%. Sterling around $1.35.</span><span class="src">Market brief, 2 Sep 2026</span></div>
+  </div>
+
+  <div class="section read">
+    <h3>The read</h3>
+    <p>Growth held up better than expected through the first half, but some of June's strength was one-off (World Cup, heatwave), and Q3 now carries the full effect of oil above $100. The OBR's March forecast predates the conflict, so its 2.3% inflation call for 2026 is already stale; the MPC now expects CPI slightly above 4% in 2027 Q1.</p>
+    <p>The policy tension is clear: a loosening labour market argues for patience, while three MPC members want to lean against second-round effects. Markets price the first hike by December. For the public finances, higher debt interest and benefit uprating are pushing borrowing above forecast ahead of the Autumn Budget.</p>
+  </div>
+</section>
+
+<!-- OUTLOOK -->
+<section id="view-outlook" data-panel hidden>
+  <h2>Outlook to 2030</h2>
+  <p class="lede">The central path blends three things: the estimated model's own forecast, a no-change benchmark where that beat the model in testing, and the official and consensus forecasts (OBR, Bank of England, Treasury survey), with Bank Rate anchored on market pricing. Q3 2026 GDP is pinned to a nowcast from July GDP and the September PMI. Shaded bands show the 50% and 90% ranges, taken from the actual spread of the model's past forecast errors. They are lopsided where history is: GDP has a long downside tail from 2008.</p>
+  <div class="legend"><span><i style="border-color:var(--accent)"></i>Central</span><span><i style="border-color:var(--accent);border-top-width:8px;opacity:.25"></i>50% and 90% ranges</span><span><i style="border-color:var(--good);border-top-style:dashed"></i>Upside: Strait reopens</span><span><i style="border-color:var(--bad);border-top-style:dashed"></i>Downside: prolonged disruption</span></div>
+  <div class="grid3" id="outlookCharts"></div>
+  <div class="section panel">
+    <h3>How the central path is built</h3>
+    <div class="tablewrap"><table id="baseTable"></table></div>
+    <p class="note" style="margin-top:10px">RPI central = CPI central plus the modelled RPI wedge from the basket below. Its range reuses CPI's error bands.</p>
+    <p class="note" style="margin-top:10px">Model assumptions: Brent averages $91 in Q3 2026 then stays near $100; sterling flat at $1.345; the Ofgem cap rises 13% in July and 4% in October, then holds. Bank Rate is 3.75% through Q3, and its anchor is the market path (about 4.2% by mid-2027; 2028 to 2030 extrapolated as a gently falling curve, my assumption). Q3 GDP growth is set to the 0.5% nowcast. The blend weights are the ones that minimised past errors (GDP 50% model, CPI 75%, Bank Rate 50%, unemployment 0%). The official anchor carries 50% weight to 2028 and 75% after that, beyond the range the model was tested on. Borrowing and debt are fiscal years (2026 = 2026-27).</p>
+  </div>
+
+  <div class="section panel">
+    <h3>RPI on its own basket</h3>
+    <div class="tablewrap"><table id="rpiBaseTable"></table></div>
+    <p class="note" style="margin-top:10px">RPI is built up from its 2026 basket weights: 961 parts per 1,000 cover goods and services priced much as in CPI, plus RPI-only housing items (house depreciation 75/1000, council tax) and the Carli averaging formula, which together are modelled as a wedge over CPI that drifts back to its long-run 0.7pp. Mortgage interest payments (39/1000) follow Bank Rate with the lag of fixed-rate refinancing, so they keep adding to RPI even as rates fall (the equation starts 1.5pp below its fitted value to match the latest ONS reading, fading over two years). From February 2030 RPI takes CPIH's methods and prices, so the wedge fades month by month through 2030 (CPIH assumed 0.2pp above CPI). RPI still drives index-linked gilts, many regulated fares, some student loan interest and older pension and commercial contracts.</p>
+  </div>
+</section>
+
+<!-- SCENARIO -->
+<section id="view-scen" data-panel hidden>
+  <h2>Scenario lab</h2>
+  <p class="lede">Move the levers; the estimated quarterly model works out how the economy responds, and the result is laid over the central path. Shocks start in 2026 Q4. The shaded band is the 90% range of normal forecast errors, so a scenario outside it is a genuine stress case.</p>
+  <div class="sgrid">
+    <div class="controls" id="controls">
+      <div class="ctl">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h3 style="margin:0">Presets</h3><button type="button" class="linkbtn" id="resetBtn">Reset to baseline</button></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:8px">
+          <label class="toggle" style="font-weight:500"><input type="checkbox" id="multiMode"> Pick several presets</label>
+          <select id="multiHow" aria-label="How to combine presets" hidden><option value="add">Add their effects together</option><option value="max">Use the stronger setting for each lever</option></select>
+        </div>
+        <div id="presets"></div>
+        <p class="presetnote" id="presetNote"></p>
+      </div>
+      <div id="levers"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div class="legend" style="margin:0"><span><i style="border-color:var(--accent)"></i>Central</span><span><i style="border-color:var(--scen)"></i>Your scenario</span><span><i style="border-color:var(--accent);border-top-width:8px;opacity:.2"></i>90% range</span></div>
+      <p class="presetnote" id="bandNote" style="margin:0"></p>
+      <div class="panel" id="cmpPanel" hidden>
+        <h3>Selected presets, alone and combined</h3>
+        <div class="tablewrap"><table id="cmpTable"></table></div>
+        <p class="note" style="margin-top:8px" id="cmpNote"></p>
+      </div>
+      <div class="grid2" id="scenCharts"></div>
+      <div class="panel">
+        <h3>Scenario minus baseline</h3>
+        <div class="tablewrap"><table id="deltaTable"></table></div>
+      </div>
+      <div class="panel">
+        <h3>Fiscal rules in 2029-30</h3>
+        <div class="tiles" id="ruleTiles" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
+        <p class="note" style="margin-top:8px">Stability rule: the current budget (excluding net investment) in surplus in 2029-30. Investment rule: net financial liabilities falling as a share of GDP in 2029-30, approximated here by net debt. Headroom is the starting margin (set under Fiscal levers) less the scenario's effect. Also affected: frozen tax thresholds (receipts rise faster than pay), cash-limited departmental budgets to 2028-29, benefits uprated with last September's CPI, RPI-linked gilts and the speed at which higher rates reach debt interest.</p>
+      </div>
+      <div class="panel">
+        <h3>How sure is this scenario?</h3>
+        <p class="note" style="margin:0 0 8px">Reruns the scenario 120 times, varying the uncertain parts: how strongly rates and fiscal policy move demand, energy and sterling pass-through, how far pay reacts to high inflation, the market links, and the size of every outside shock you have set (±30%; policy levers such as tax, spending and Bank Rate are taken as given). Scenarios built only from menu choices, such as MPC stance, show no range. The orange shaded band on the charts shows the 10% to 90% range of results; it updates a moment after you stop moving the levers.</p>
+        <button type="button" class="linkbtn" id="uncBtn" hidden>Show the range for this scenario</button>
+        <div class="tablewrap" style="margin-top:8px"><table id="uncTable"></table></div>
+      </div>
+      <div class="panel">
+        <h3>Automatic responses in this scenario</h3>
+        <div class="tablewrap"><table id="linkTable"></table></div>
+        <p class="note" style="margin-top:8px">These are what the linked markets do on their own, versus the central path, before adding any lever you set for the same variable. Turn off "Let markets and investment respond" to see the unlinked result.</p>
+      </div>
+      <div class="panel">
+        <h3>RPI build-up in this scenario</h3>
+        <div class="tablewrap"><table id="rpiScenTable"></table></div>
+        <p class="note" style="margin-top:8px">Rate moves reach RPI through mortgage interest with a lag; house-price moves reach it through depreciation in the first year. From February 2030 RPI follows CPIH.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS -->
+<section id="view-biz" data-panel hidden>
+  <h2>Business lens</h2>
+  <p class="lede">What the current Scenario lab settings mean for costs, customers and demand. Change the scenario and this view follows. <span id="bizScenName" class="pill neu"></span></p>
+  <div class="tiles" id="bizTiles"></div>
+  <div class="section grid2">
+    <div class="panel">
+      <h3>Sector exposure, 2027 to 2028</h3>
+      <div class="tablewrap"><table class="sector" id="sectorTable"></table></div>
+      <p class="note" style="margin-top:8px">Score = weighted sum of each sector's sensitivity to growth, rates, energy, inflation, credit, housing, sterling, labour supply, fiscal and trade shocks versus baseline. Heuristic weights, not estimated.</p>
+    </div>
+    <div class="panel">
+      <h3>Borrowing costs</h3>
+      <div class="ctl" style="margin-bottom:10px"><label for="spread">SME loan spread over Bank Rate <output id="spread-o"></output></label><input type="range" id="spread" min="1" max="6" step="0.25"><small>Set to the margin your clients actually pay.</small></div>
+      <div class="tablewrap"><table id="costTable"></table></div>
+      <div class="chartbox" style="margin-top:12px"><canvas id="bizChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOUSEHOLDS -->
+<section id="view-hh" data-panel hidden>
+  <h2>Households</h2>
+  <p class="lede">Who feels the current Scenario lab settings. Each group's inflation is built from its own spending on food, household energy, motor fuel, rent and mortgage interest, with everything else rising at the scenario's underlying inflation. Change the scenario and this view follows. <span id="hhScenName" class="pill neu"></span></p>
+  <div class="tiles" id="hhTiles"></div>
+  <div class="section grid2">
+    <div class="panel"><h3>Extra cost-of-living inflation versus the central path</h3><div class="tablewrap"><table id="hhTable"></table></div>
+      <p class="note" style="margin-top:8px">Percentage points of each group's own inflation rate, and the extra weekly cost at its average spending. Mortgage interest is counted as a cost, as in RPI and the ONS Household Costs Indices.</p></div>
+    <div class="panel mech"><h3>Spending shares used</h3><div class="tablewrap"><table id="hhShares"></table></div>
+      <p class="note" style="margin-top:8px"><b>Sourced:</b> the poorest fifth spends about 15% on food at home (Defra 2024-25), 10% on household energy and 13% on rent (ONS Family Spending 2023-24); the richest fifth 5% on energy and 7% on mortgage interest; average weekly spending £407 for the poorest fifth and £1,084 for the richest (ONS, April 2024 to March 2025). <b>Interpolated or assumed:</b> the middle fifths, motor fuel shares, the richest fifth's food and rent shares, and all the tenure groups' shares and spending (informed by the English Housing Survey 2024-25: private renters pay 34% of income in rent, mortgagors 19% in mortgage payments). Treat differences between groups as indicative.</p></div>
+  </div>
+</section>
+
+<!-- LONG RUN -->
+<section id="view-lr" data-panel hidden>
+  <h2>Long run to 2040</h2>
+  <p class="lede">What the current scenario leaves behind once the business cycle has passed. The quarterly model runs to 2030; after that, demand effects fade and only supply-side changes persist: productivity, migration, people returning from long-term sickness, public and private capital, and the drag from higher debt on investment. <span id="lrScenName" class="pill neu"></span></p>
+  <div class="grid3" id="lrCharts"></div>
+  <div class="section grid2">
+    <div class="panel"><h3>Scenario versus central, selected years</h3><div class="tablewrap"><table id="lrTable"></table></div></div>
+    <div class="panel mech"><h3>How the long run is built</h3>
+      <ul>
+        <li><b>Baseline growth after 2030</b> is about 1.25% a year: productivity 1.2% a year (midway between the OBR's 1% medium-term and 1.4% long-run assumptions), plus hours growth of about 0.05% (ONS 2024-based projections: population up about 0.2% a year, less roughly 0.15 points for ageing, my estimate).</li>
+        <li><b>Persisting effects:</b> productivity levers continue each year; migration keeps adding workers (and people, so GDP per head is shown too); public investment builds a public capital stock worth 0.1% of GDP a year per 1% of GDP invested, depreciating 3% a year; business tax relief raises the capital stock as in the OBR's full-expensing estimate; each point of extra debt lowers output about 0.08% through higher borrowing costs.</li>
+        <li><b>Debt:</b> unchanged policy from the 2030 position, with ageing adding about 0.2% of GDP a year to spending (health, state pension and social care, a straight-line reading of the OBR's 2026 long-run projections), 3.8% effective interest and 2% inflation. The scenario keeps its lasting borrowing change, pays interest on its extra debt, and gains 0.1 points of GDP of primary balance per 1% of extra output from productivity or capital (spending partly rises with the economy); migration's fiscal effect is held at its 2030 level, since the OBR finds migrants' net contribution shrinks as they age. On these assumptions central debt edges down until the mid-2030s, whereas the OBR's 2026 long-run projections have it rising from 2032-33, so this baseline is on the kinder side.</li>
+        <li>This is a projection under stated assumptions, not a forecast. Beyond 2030 nothing has been tested against data.</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- PARTIES -->
+<section id="view-parties" data-panel hidden>
+  <h2>Party platforms</h2>
+  <p class="lede">What each party's latest stated tax, spending, trade and migration plans would do in this model, as if in force from 2027. The next general election is due by August 2029, so this is a hypothetical test of the policies, not a forecast of any election. Every party is treated by the same rules.</p>
+  <div class="panel"><div class="tablewrap"><table id="partyTable"></table></div>
+  <p class="note" style="margin-top:10px">Differences from the central path unless stated. GDP is the level by 2030. "Half delivered" applies the same test to every party: the savings or revenue that pay for their pledges raise only half what the party says, while the pledges themselves go ahead in full.</p></div>
+  <div class="section grid2">
+    <div class="panel mech"><h3>How platforms are mapped</h3>
+      <ul>
+        <li>Costings are the party's own where published, converted at about £32bn per 1% of GDP. Tax changes go to the household tax lever, day-to-day spending and welfare to the spending lever, capital spending to public investment.</li>
+        <li><b>Labour</b> is the central path, which reflects current government policy as official forecasts do.</li>
+        <li><b>Conservative:</b> October 2025 platform (£47bn of named savings; over £20bn of tax cuts including stamp duty abolition, which is assumed to lift house prices about 2%).</li>
+        <li><b>Reform UK:</b> September 2026 conference platform (£15,000 personal allowance; £80bn of savings and migrant levies).</li>
+        <li><b>Liberal Democrat:</b> 2024 manifesto, the party's latest full costing (£27bn of tax rises, £26.8bn of day-to-day spending, £19.7bn a year of borrowed investment, closer EU trade).</li>
+        <li><b>Green:</b> 2024 manifesto, the latest full costing, plus 2026 statements (wealth tax, £8.4bn energy bill support, rejoining the EU). The £90bn carbon tax is modelled like a consumption tax, so it raises prices once.</li>
+        <li>No party has published a numerical net migration target (Institute for Government, October 2025), so migration is left at the central path for all. Use the migration levers to explore.</li>
+      </ul></div>
+    <div class="panel mech"><h3>What the model cannot judge</h3>
+      <ul>
+        <li><b>It is a demand-side model over five years.</b> Spending increases lift growth and cuts reduce it in the short run. It has no effects of taxes on incentives to work, invest or relocate, no gains or losses in public-service productivity, and no effects after 2030. That favours high-spending platforms and penalises consolidation in the short run, whatever their long-run merits.</li>
+        <li><b>Market confidence</b> enters only through the automatic gilt premium, which rises with debt. Sudden loss of confidence of the kind seen in 2022 is not built in; use the gilt stress lever.</li>
+        <li><b>Not modelled:</b> nationalisation, rent controls, leaving the ECHR, deportation targets, net zero rules, regulation, and the distribution of gains and losses between households.</li>
+        <li>Deliverability varies widely. The IFS judged the Green revenue unlikely, the Lib Dem revenue at risk, and Reform's savings to need large unspecified cuts; the Institute for Government called the Conservative welfare savings unprecedented.</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- ACCURACY -->
+<section id="view-acc" data-panel hidden>
+  <h2>How accurate is it?</h2>
+  <p class="lede">The model was re-estimated at every quarter from 2004 to 2025 using only the data available up to that point, then asked to forecast up to three years ahead. These are its real out-of-sample errors, not in-sample fit. Forecasts made from 2019 to 2021 are excluded because of Covid.</p>
+  <div class="tiles">
+    <div class="tile"><span class="k">CPI, 2 years ahead</span><span class="v">±1.3pp</span><span class="d">Typical error of the blend, against ±2.6pp for assuming no change. The model roughly halves the error.</span></div>
+    <div class="tile"><span class="k">CPI, calm periods</span><span class="v">±1.1pp</span><span class="d">Two years ahead, excluding the 2008 crash and the 2021–23 energy shock.</span></div>
+    <div class="tile"><span class="k">GDP growth, 1 year ahead</span><span class="v">±2.4pp</span><span class="d">Against ±3.0pp for no change. Calm periods ±1.3pp. Recessions dominate the error.</span></div>
+    <div class="tile"><span class="k">Bank Rate, 1 year ahead</span><span class="v">±1.2pp</span><span class="d">Against ±1.3pp for no change. Calm periods ±0.4pp.</span></div>
+  </div>
+  <div class="section grid2">
+    <div class="panel"><h3>Out-of-sample errors by horizon</h3><div class="tablewrap"><table id="rmseTable"></table></div>
+      <p class="note" style="margin-top:8px">RPI: given actual CPI and Bank Rate, the RPI build-up tracked 2022 to 2026 with a typical error of 0.75pp, running slightly high in 2024 when mortgage refixing slowed. The mortgage interest equation explains 83% of the variation since 2011.</p>
+      <p class="note" style="margin-top:8px">The model forecast unemployment worse than simply assuming no change, so the central path uses no change for unemployment. The model is still used for how unemployment responds in scenarios.</p></div>
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div class="read"><h3>The 2022 back-test</h3>
+        <p>Starting from end-2021 data, and told the actual path of oil, household energy bills and sterling, the model predicts CPI peaking at 7.5% against an actual 10.7%. It captures about half the surge. It misses food prices (food inflation peaked at about 19%), the wage response, and the Energy Price Guarantee's timing. With energy held flat it predicts almost nothing, as nearly every forecaster did.</p>
+        <p>It also under-predicts how far the Bank of England raised rates, because the estimated rule reacts gradually. Treat energy-shock scenarios as the lower end of the plausible inflation response.</p></div>
+      <div class="grid2" id="btCharts" style="grid-template-columns:1fr"></div>
+    </div>
+  </div>
+  <div class="section grid2">
+    <div class="panel"><h3>Pay, food and services equations (added September 2026)</h3><div class="tablewrap"><table id="coef2Table"></table></div>
+      <p class="note" style="margin-top:8px">Quarterly, 2001 to 2026 (the pay series starts in 2001), Covid years excluded. Pay is AWE regular pay growth (KAI9); food and services are CPI annual rates (D7G8, D7NN).</p></div>
+    <div class="panel mech"><h3>What the new blocks add, and what they do not</h3>
+      <p><b>Pay.</b> Pay growth barely responds to inflation below about 4%, but above that it responds strongly: each point of inflation above 4% adds about 0.16 points to pay growth each quarter, building to more than a point. That threshold is identified only from 2022 to 2023, the one high-inflation episode in the sample. Rising long-term sickness lifts pay (fewer workers), and slack lowers it.</p>
+      <p><b>Used for scenarios only.</b> The pay loop changes how scenarios differ from the central path; the central path itself does not use it. An out-of-sample test (2006 to 2025, re-estimated each quarter) of a simpler version, with a straight-line inflation term and pay added to the inflation equation, cut the two-year CPI error only slightly (1.21 to 1.18 points), and that pay equation forecast worse than assuming no change (1.54 against 1.45 points). So the central pay path stays on the official anchor. The above-4% version could not be tested this way, because its only evidence is the period it would be tested on.</p>
+      <p><b>Food.</b> Food inflation follows oil two quarters earlier, household energy bills, sterling and pay (R² 0.91). Once energy is in the inflation equation, food adds no further forecasting power for headline CPI, so energy's effect on food is not counted twice: the separate food channel only carries world food price shocks you set.</p>
+      <p><b>Sterling.</b> A trade-weighted index is now built from 11 currencies (euro 48%, dollar 21%, renminbi 7% and others). Its link to rate changes is estimated (1.6% per point, t = 2.9), but pass-through to prices cannot be pinned down in the data with either the dollar or the trade-weighted rate, so it is set at 0.2 (a 10% fall adds about 2% to prices over two years), the middle of published UK estimates.</p>
+    </div>
+  </div>
+  <div class="section grid2">
+    <div class="panel"><h3>Estimated coefficients</h3><div class="tablewrap"><table id="coefTable"></table></div>
+      <p class="note" style="margin-top:8px">Greyed t-stats are not statistically significant. The Phillips curve slope (unemployment gap) is close to zero in UK data since 1993, so demand shocks move inflation very little in this model. That is consistent with the widely reported flattening of the UK Phillips curve, but it may understate inflation risk in a tight labour market.</p></div>
+    <div class="panel mech"><h3>Estimated versus calibrated</h3>
+      <p><b>Estimated from UK data (1993–2026, Covid excluded):</b> inflation persistence and pass-through from oil and household energy bills; output-gap dynamics; the Bank Rate reaction function (long-run responses 1.5 to inflation and 0.75 to the output gap, strong smoothing); the link from growth to unemployment.</p>
+      <p><b>Calibrated to published estimates, because the data do not identify them well:</b> the effect of interest rates on demand (set so a sustained 1pp rise in Bank Rate lowers GDP by roughly 0.6% after two years, in line with Bank of England estimates); sterling pass-through (10% depreciation adds about 1% to prices, since the only sterling data available here is against the dollar); fiscal multipliers (OBR-style: spending 0.6, tax 0.35, public investment 1.0); oil's real-income drag; migration, tariffs, the fiscal block; the business-lending spread, expectations, world-demand and investment links. The sterling, gilt-yield, QE, house-price and saving links are estimated; bank losses are calibrated to the 2025 stress test. The out-of-sample tests above cover the central forecast, which the links do not change; the links only shape scenarios.</p>
+      <p><b>Data:</b> ONS GDP (IHYQ), CPI (D7G7, with the index chained from it), unemployment (MGSX) and household energy CPIH (L56Z); Bank of England Bank Rate history; monthly Brent and dollar exchange rates. The output gap and neutral rates are statistical trend estimates, which are least reliable at the end of the sample.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NOTES -->
+<section id="view-notes" data-panel hidden>
+  <h2>Method and sources</h2>
+  <div class="grid2">
+    <div class="panel mech">
+      <h3>How the model works</h3>
+      <p>A quarterly semi-structural model with four estimated equations and a calibrated fiscal and business block. It runs from 2026 Q3 to 2030 Q4 and is aggregated to calendar years. Scenarios are computed as the model's response relative to its own baseline, then added to the central path.</p>
+      <ul>
+        <li><b>Output gap</b> <code>gap = 1.58·gap₋₁ − 0.69·gap₋₂ − 0.07·(real Bank Rate − neutral)₋₂ − 0.003·oil y/y₋₁ + demand shocks</code>. Demand shocks are scaled so their long-run effect equals the multiplier listed under Accuracy.</li>
+        <li><b>Inflation</b> (quarterly, seasonally adjusted) <code>π = anchor + 0.40·(π₋₁ − anchor) + 0.21·(π₋₂ − anchor) + 0.010·Δoil + 0.048·Δbills + sterling + one-offs</code>. The anchor is the 2% target, shifted by the expectations lever. Household bills follow wholesale energy at half strength with a two-quarter lag, reflecting the Ofgem cap.</li>
+        <li><b>Overheating</b> Once unemployment falls below the sustainable rate (a lever, 4.5% by default), inflation gets an extra push that grows with the square of the shortfall. Unemployment 1pp below adds roughly 1pp to annual inflation once it has built up; 2pp below adds about 4pp. UK data since 1993 point the same way but cannot pin the size down (t-statistic about 1, with only one tight episode, 2022, which the energy shock also muddies), so the strength is set between the estimate and more cautious published views.</li>
+        <li><b>Bank Rate</b> <code>i = 0.93·i₋₁ + 0.107·π + 0.055·gap + 0.057·r* + c</code>, estimated outside the zero-bound years. It ignores VAT and energy-support one-offs. The MPC stance scales the inflation response.</li>
+        <li><b>Unemployment</b> <code>Δu = 0.39·Δu₋₁ − 0.066·(g − g*) − 0.097·(g − g*)₋₁</code></li>
+        <li><b>GDP growth</b> potential growth (about 1% a year, statistical trend) plus the change in the gap, plus productivity and labour-supply levers.</li>
+        <li><b>Automatic links</b> (on by default, switchable). Each responds to the scenario's gap from the central path, and any lever for the same variable adds on top. Estimates use UK data 1993 to 2026 excluding Covid, with robust standard errors.
+          <ul>
+            <li><b>Sterling</b> rises 2.3% per 1pp rise in Bank Rate relative to the central path (estimated, t = 2.9) and falls 4% per 100bp of extra UK gilt risk premium (calibrated to September 2022).</li>
+            <li><b>Gilt yields</b> rise 5bp per point of net debt (estimated from ONS debt and 10-year gilt yields: t = 1.9 in four-quarter changes, 3.4 in levels). QE holdings lower yields by about 12bp per 1% of GDP held (t = 2.7 to 3.6), consistent with the Bank's estimate that the first £200bn cut gilt yields by about 100bp.</li>
+            <li><b>House prices</b> follow the estimated dynamics on the Bank of England two-year fixed mortgage rate: a sustained 1pp rise takes about 3.4% off prices (t = 3.3), with momentum carrying moves forward.</li>
+            <li><b>Household saving</b> rises 0.37pp for each 1pp rise in unemployment over a year, building to about 1.3pp before fading (estimated on the ONS saving ratio, t = 2.7).</li>
+            <li><b>Bank lending spreads</b> widen 20bp per 1% the economy falls below the central path, capped at 400bp. Mortgage data show no independent widening once rate cuts are allowed for: the apparent widening in 2009 was fixed-rate mortgages lagging Bank Rate cuts (a 1pp cut widens the spread by 0.17pp at first, t = 5.5). So this link is a modest, calibrated allowance for business and unsecured lending, where spreads did widen in 2008 but no data was available here.</li>
+            <li><b>Inflation expectations</b> drift up by 4% of any excess in underlying inflation each quarter and fade slowly; the stance lever scales the drift (calibrated).</li>
+            <li><b>World demand</b> falls 0.4% per 10% rise in oil prices (calibrated; falls in oil do not boost it).</li>
+            <li><b>Business investment</b> moves 2.5% per 1% of output gap and adds capacity after six quarters; only the capacity effect is added (calibrated).</li>
+          </ul></li>
+        <li><b>Borrowing and debt</b> use the annual fiscal block: automatic stabilisers of 0.5, debt interest of <code>0.12·i + 0.06·Σgilt + 0.1·π</code> (matching the OBR's £15bn per 1pp), and productivity effects matching the OBR's range.</li>
+        <li><b>Crisis mechanics</b> (levers under "Crisis mechanics"):
+          <ul>
+            <li><b>Lower bound and QE.</b> Bank Rate stops at a floor you set (0.1% by default; negative allowed). When the rule wants to go lower, QE buys enough gilts to take about 40bp off yields per 1pp of missing cuts (80bp if aggressive, capped at 200bp). That matches the 2009 programme: roughly 4pp of cuts the Bank could not make, £200bn of purchases, and about 100bp off yields. QE's effect on demand is set at 1% of GDP per 100bp, below the 1.6pp average GDP effect of QE1 across 16 studies reported by the Bank, to be cautious.</li>
+            <li><b>Debt deflation.</b> A price level below the path borrowers expected cuts spending by 0.1% of GDP per 1% shortfall, doubled once prices fall outright. It is scaled to today's household debt of 117% of disposable income (Q1 2026, against 156% at the 2008 peak); calibrated.</li>
+            <li><b>Bank failures.</b> Bank capital losses are calibrated to the Bank of England's 2025 stress test, where unemployment peaking at 8.5%, house prices down 28% and GDP down 5% took the banks' aggregate CET1 ratio from 14.5% to 11.0%, a 3.5pp drawdown still above regulatory minima and buffers. So losses are 0.41pp of capital per point of extra unemployment and 0.066pp per 1% fall in house prices. "Today's" buffers absorb 3.5pp before lending is rationed, "stronger" 5pp, and "2008-era" only 1pp. Beyond that, spreads widen up to 300bp more and investment is cut. A government rescue halves the crunch but adds its cost to borrowing.</li>
+          </ul></li>
+        <li><b>Policy levers added for business and migration</b>
+          <ul>
+            <li><b>Business investment tax relief</b> is scaled to the OBR's assessment of permanent full expensing: about 0.3% of GDP a year in cost (£9 to 11bn), business investment up about 1.2% a year, and the capital stock 0.5% higher in the long run. Per 1% of GDP of relief: investment up 4% and capacity up about 0.1% a year from 2028.</li>
+            <li><b>Government loan guarantees</b> cut SME lending spreads by 50bp per 1% of GDP guaranteed, with expected losses of 10% a year of the stock added to borrowing. Both numbers are judgement; I found no UK estimate of how much guarantees lower spreads.</li>
+            <li><b>Migration is split</b> into work and family migration and international students. Each 100,000 people adds about 0.14% to GDP a year through labour supply; students count at 30% because most work part-time. Students' fees and spending are exports, about £100,000 per student over a course (HEPI, 2026 cohort), which the model counts as 0.25% of GDP per 100,000 arrivals a year once numbers have built up.</li>
+            <li><b>Housing:</b> each 1 percentage point change in the immigrant share of the population moves house prices about 0.8% and rents about 0.75% (Migration Advisory Committee review, June 2026: median 0.65% and mean 1% for house prices; 0.64% to 0.87% for rents). Rents feed CPI through their 8.4% weight.</li>
+            <li><b>Staff shortages:</b> cutting work migration adds 0.15pp a year to pay growth per 100,000, reflecting shortages in care, health and hospitality where non-UK workers are heavily represented, and 0.05% of GDP a year to public spending for NHS and care pay (judgement).</li>
+            <li><b>Fiscal effect of migration</b> is calibrated to the OBR's March 2024 scenario, where 200,000 a year lower net migration raised debt by 3.1% of GDP after five years without offsetting spending cuts.</li>
+          </ul></li>
+        <li><b>Business lens</b> pay follows the estimated pay equation; SME loan rates add any credit-spread shock; sector weights are judgement.</li>
+        <li><b>Added in September 2026</b>
+          <ul>
+            <li><b>Pay, food and services</b> are estimated equations (see Accuracy). Pay feeds back into inflation (0.043 per point of extra pay growth each quarter) and responds strongly once inflation is above 4%. Food carries world food price shocks; energy's effect on food is already in the inflation equation.</li>
+            <li><b>Market expectations.</b> Two-year fixed mortgage rates and sterling respond to the expected path of Bank Rate over the next two years, and the 10-year gilt to the expected path over ten years, taken from the scenario's own rate path (the model is rerun until the path it expects is the path it gets). A hike that markets already price is in the central path; only surprises move things.</li>
+            <li><b>Trade and the current account.</b> Exports follow world demand, tariffs, trade-weighted sterling (price elasticity about 0.13, consistent with the demand block) and productivity gains; imports rise 1.2% per 1% of GDP and 0.2% per 1% sterling appreciation; a 10% rise in oil costs about 0.1% of GDP on the energy trade balance. Elasticities are calibrated; ONS export and import volume series were not reachable for estimation.</li>
+            <li><b>Long-term sickness.</b> 100,000 fewer people inactive through ill health adds about 0.15% to GDP (70% relative productivity and hours), saves about 0.045% of GDP a year (£15,000 each in benefits and tax, OBR 2023) and lowers pay pressure through the estimated inactivity term.</li>
+            <li><b>Fiscal rules.</b> Stability and investment rule headroom in 2029-30, from the OBR's March 2026 figures (£23.6bn and £27.1bn) or September independent estimates for the stability rule (about £10bn; the investment rule is assumed to lose the same £13.6bn, as no estimate was found). Debt interest: 0.21% of GDP per point on short rates in 2026-27, falling to 0.11% by 2030-31 as QT shrinks reserves (OBR ready reckoner), plus about 4.2% interest on any extra debt, plus gilt refinancing at 0.06% a year per point, plus 0.25% of GDP per point of RPI on index-linked gilts (a quarter of the stock). Frozen thresholds: receipts rise with pay at an elasticity of about 1.2. Departmental budgets fixed in cash to 2028-29, with half of any real squeeze from higher inflation assumed to stick.</li>
+            <li><b>Uncertainty.</b> 120 reruns drawing the interest-rate effect on demand (±35%), demand multipliers (±25%), oil and energy pass-through (their standard errors), pay's response to high inflation, sterling pass-through, the market links, and the size of outside shocks (±30%; policy levers are not varied). The range covers parameter and judgement uncertainty, not the chance of new shocks.</li>
+            <li><b>Nowcast.</b> Q3 2026 growth set at 0.5%: July GDP carried forward gives about 0.6%, the September flash PMI of 51.7 about 0.3% (rule of thumb), weighted two-thirds to one-third.</li>
+            <li><b>Households and long run</b> are described on their tabs.</li>
+          </ul></li>
+      </ul>
+    </div>
+    <div class="panel srclist">
+      <h3>Sources</h3>
+      <ul>
+        <li><a href="https://www.ons.gov.uk/economy/grossdomesticproductgdp/bulletins/gdpfirstquarterlyestimateuk/apriltojune2026" target="_blank" rel="noopener">ONS, GDP first quarterly estimate Q2 2026</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/august2026" target="_blank" rel="noopener">ONS, Consumer price inflation August 2026</a></li>
+        <li><a href="https://commonslibrary.parliament.uk/research-briefings/sn02792/" target="_blank" rel="noopener">Commons Library, Inflation indicators</a></li>
+        <li><a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/uklabourmarket/september2026" target="_blank" rel="noopener">ONS, Labour market overview September 2026</a></li>
+        <li><a href="https://commonslibrary.parliament.uk/research-briefings/cbp-9366/" target="_blank" rel="noopener">Commons Library, Labour market statistics</a></li>
+        <li><a href="https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/september-2026" target="_blank" rel="noopener">Bank of England, September 2026 Monetary Policy Summary</a></li>
+        <li><a href="https://www.bankofengland.co.uk/monetary-policy-report/2026/july-2026" target="_blank" rel="noopener">Bank of England, Monetary Policy Report July 2026</a></li>
+        <li><a href="https://commonslibrary.parliament.uk/research-briefings/sn02802/" target="_blank" rel="noopener">Commons Library, Interest rates and monetary policy</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/governmentpublicsectorandtaxes/publicsectorfinance/bulletins/publicsectorfinances/august2026" target="_blank" rel="noopener">ONS, Public sector finances August 2026</a></li>
+        <li><a href="https://obr.uk/efo/economic-and-fiscal-outlook-march-2026/" target="_blank" rel="noopener">OBR, Economic and fiscal outlook March 2026</a></li>
+        <li><a href="https://commonslibrary.parliament.uk/research-briefings/sn02783/" target="_blank" rel="noopener">Commons Library, GDP indicators (HMT consensus)</a></li>
+        <li><a href="https://tradingeconomics.com/commodity/brent-crude-oil" target="_blank" rel="noopener">Trading Economics, Brent crude</a></li>
+        <li><a href="https://www.ofgem.gov.uk/press-release/energy-price-cap-will-rise-4-october-2026" target="_blank" rel="noopener">Ofgem, price cap October 2026</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/grossdomesticproductgdp/timeseries/ihyq/qna" target="_blank" rel="noopener">ONS time series IHYQ, D7G7, MGSX, L56Z</a></li>
+        <li><a href="https://www.bankofengland.co.uk/boeapps/database/Bank-Rate.asp" target="_blank" rel="noopener">Bank of England, Bank Rate history</a></li>
+        <li><a href="https://github.com/datasets/oil-prices" target="_blank" rel="noopener">Brent monthly (EIA via datasets/oil-prices)</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/grossdomesticproductgdp/bulletins/gdpmonthlyestimateuk/july2026" target="_blank" rel="noopener">ONS, GDP monthly estimate July 2026</a></li>
+        <li><a href="https://www.fxstreet.com/news/united-kingdom-flash-services-pmi-expands-slower-than-expected-to-517-in-september-202609230834" target="_blank" rel="noopener">S&amp;P Global flash PMI September 2026 (via FXStreet)</a></li>
+        <li><a href="https://www.xtb.com/en/education/uk-interest-rate-forecast" target="_blank" rel="noopener">XTB, UK interest rate forecast (market pricing, 21 Sep 2026)</a></li>
+        <li><a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/timeseries/kai9/lms" target="_blank" rel="noopener">ONS time series KAI9 (regular pay), D7G8 (food CPI), D7NN (services CPI), LF2S and LF69 (inactivity), AA6H (current account)</a></li>
+        <li><a href="https://obr.uk/efo/economic-and-fiscal-outlook-march-2026/" target="_blank" rel="noopener">OBR, fiscal rule headroom, debt interest ready reckoners and threshold freezes (March 2026 and November 2025)</a></li>
+        <li><a href="https://lordslibrary.parliament.uk/uk-fiscal-outlook/" target="_blank" rel="noopener">Lords Library, UK fiscal outlook September 2026 (headroom estimates)</a></li>
+        <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/personalandhouseholdfinances/expenditure/bulletins/familyspendingintheuk/april2024tomarch2025" target="_blank" rel="noopener">ONS, Family spending in the UK (spending by income)</a></li>
+        <li><a href="https://www.gov.uk/government/collections/english-housing-survey" target="_blank" rel="noopener">English Housing Survey 2024-25 (tenure)</a></li>
+        <li><a href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections" target="_blank" rel="noopener">ONS 2024-based national population projections</a></li>
+        <li><a href="https://obr.uk/frs/fiscal-risks-and-sustainability-july-2026/" target="_blank" rel="noopener">OBR, Fiscal risks and sustainability 2026 (long-run pressures)</a></li>
+        <li><a href="https://www.samuelandcotrading.com/morning-market-brief-2-september-2026-hormuz-yields-gold/" target="_blank" rel="noopener">Samuel &amp; Co, market brief 2 Sep 2026 (gilts, sterling)</a></li>
+      </ul>
+      <p class="note">Net debt: the ONS August bulletin gives 93.8% of GDP; the Commons Library page shows 95.1%, likely a different vintage or measure. The model uses the ONS figure.</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+const M={"coef":{"pc":{"dp1":0.40078,"dp2":0.20634,"ug1":-0.00129,"qo0":0.01002,"qo1":0.00078,"qo2":-0.00314,"qo3":0.00082,"qhe0":0.04773,"qhe1":-0.00414,"qfx1":0.00484,"qfx2":-0.00747,"qfx3":-0.0012,"qfx4":-0.0059},"is":{"gap1":1.57591,"gap2":-0.68684},"tr":{"i1":0.92669,"pi":0.10744,"gap":0.05509,"rstar":0.05709,"const":-0.02678},"ok":{"du1":0.39218,"gg":-0.06562,"gg1":-0.09708},"RG":-0.07,"OILD":-0.003},"se":{"pc":0.318,"is":0.391,"tr":0.311,"ok":0.18},"r2":{"pc":0.708,"is":0.876,"tr":0.943,"ok":0.338},"t":{"pc":{"dp1":4.39,"dp2":2.78,"ug1":-0.01,"qo0":4.63,"qo1":0.3,"qo2":-1.25,"qo3":0.33,"qhe0":8.01,"qhe1":-0.54,"qfx1":0.44,"qfx2":-0.63,"qfx3":-0.1,"qfx4":-0.62},"is":{"gap1":20.14,"gap2":-8.77},"tr":{"i1":26.37,"pi":4.16,"gap":1.45,"rstar":2.06,"const":-0.13},"ok":{"du1":4.86,"gg":-1.55,"gg1":-2.24}},"state":{"q":["2024Q3","2024Q4","2025Q1","2025Q2","2025Q3","2025Q4","2026Q1","2026Q2"],"gap":[-0.28692,-0.12089,0.24131,0.20298,0.06324,-0.07761,0.27907,0.43647],"dp":[0.27254,0.84708,0.96758,1.37171,0.56198,0.46097,0.67703,1.08031],"lp":[489.56399,490.61451,491.29891,493.29001,493.29357,493.95799,494.35183,496.05153],"i":[5.08424,4.85054,4.6,4.35165,4.10054,3.96196,3.75,3.75],"u":[4.3,4.4,4.6,4.7,5.0,5.2,5.0,4.9],"cpi":[2.0,2.5,2.8,3.5,3.8,3.4,3.1,2.8],"lo":[438.00664,431.23192,432.82742,421.96057,423.36233,415.30327,438.46066,463.74115],"lfx":[26.32297,24.75672,23.1346,28.96816,29.89028,28.47338,29.89609,29.48882],"lhe":[627.5611,634.91248,636.57161,640.17424,636.38562,637.21604,639.55644,633.70561],"g":[0.2,0.4,0.6,0.2,0.1,0.1,0.6,0.4],"rstar":0.40351738117742125,"ustar":4.949987314126168,"gpot":0.24179871196927394,"seas":{"1":-0.28318943126303475,"2":0.6193929380278471,"3":-0.5584175721749928,"4":0.2034445824396397},"af":-0.32057064342006925,"path":{"q":["2026Q3","2026Q4","2027Q1","2027Q2","2027Q3","2027Q4","2028Q1","2028Q2","2028Q3","2028Q4","2029Q1","2029Q2","2029Q3","2029Q4","2030Q1","2030Q2","2030Q3","2030Q4"],"lo":[451.086,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517,460.517],"lfx":[29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394,29.6394],"lhe":[645.9274,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494,649.8494]},"ymeanG0":1.8754127182245943,"gaf":0.35403069379935914,"nowcast":0.5},"model_annual":{"gdp":[1.3873501432289048,0.5097511137466926,0.3134278468838403,0.6961672747734626,1.0665167241570295],"cpi":[3.1469073133296903,3.181910226369161,2.2985850178099785,2.070579206598394,2.0154210424984607],"unemp":[4.876308309896114,4.848501850630072,5.038512355712616,5.142532300761574,5.145455479486365],"rate":[3.979763405748215,4.142361037674512,3.803530666895064,3.416685608380267,3.1309455328992457]},"stat":{"gdp":[1.2936750716144525,0.8548755568733463,0.7567139234419201,0.9480836373867313,1.1332583620785148],"cpi":[3.1351804849972678,3.1614326697768704,2.4989387633574838,2.3279344049487953,2.2865657818738456],"unemp":[4.9,4.9,4.9,4.9,4.9],"rate":[3.864881702874108,3.946180518837256,3.776765333447532,3.583342804190133,3.4404727664496226]},"ext":{"gdp":[1.2,1.1,1.6,1.6,1.5],"cpi":[3.1,3.4,2.1,2.0,2.0],"unemp":[4.9,5.1,4.9,4.6,4.4],"rate":[3.95,4.15,3.95,3.85,3.8]},"central":{"gdp":[1.25,0.98,1.18,1.44,1.41],"cpi":[3.12,3.28,2.3,2.08,2.07],"unemp":[4.9,5.0,4.9,4.67,4.53],"rate":[3.91,4.05,3.86,3.78,3.71]},"sigma":{"gdp":[0.5,1.9,2.14,2.51,2.55],"cpi":[0.75,1.43,1.23,1.21,1.23],"unemp":[0.32,0.79,1.32,1.76,1.79],"rate":[0.69,1.66,2.18,2.26,2.26]},"W":{"gyy":0.5,"cpi":0.75,"u":0,"i":0.5},"wext":[0.5,0.5,0.5,0.75,0.75],"RM":{"gyy":[0.64,1.35,1.9,2.36,2.58,2.65,2.65,2.62,2.66,2.78,2.97,3.19],"gyy_naive":[0.92,1.95,2.56,3.0,3.28,3.39,3.38,3.25,3.13,3.1,3.15,3.3],"cpi":[0.5,1.0,1.33,1.54,1.47,1.38,1.29,1.26,1.21,1.17,1.17,1.23],"cpi_naive":[0.69,1.28,1.7,1.98,2.18,2.34,2.48,2.58,2.62,2.6,2.59,2.59],"cpi_model":[0.53,1.03,1.41,1.66,1.57,1.42,1.27,1.18,1.12,1.11,1.15,1.22],"u":[0.24,0.41,0.57,0.73,0.87,1.0,1.13,1.26,1.38,1.51,1.65,1.79],"u_model":[0.18,0.34,0.52,0.74,0.97,1.19,1.39,1.57,1.71,1.82,1.93,2.03],"i":[0.36,0.69,0.97,1.23,1.46,1.66,1.82,1.97,2.09,2.18,2.22,2.26],"i_model":[0.32,0.62,0.91,1.18,1.42,1.65,1.88,2.1,2.29,2.4,2.42,2.4],"i_naive":[0.43,0.79,1.09,1.34,1.55,1.73,1.86,1.96,2.04,2.11,2.18,2.25]},"CALM":{"gyy":[1.31,2.18],"cpi":[0.95,1.06],"u":[0.6,1.12],"i":[0.43,0.81]},"bt":{"q":["2022Q1","2022Q2","2022Q3","2022Q4","2023Q1","2023Q2","2023Q3","2023Q4","2024Q1","2024Q2","2024Q3","2024Q4"],"cpi_act":[6.2,9.2,10.0,10.7,10.2,8.4,6.7,4.2,3.5,2.1,2.0,2.5],"cpi_mod":[5.79,7.46,6.87,6.18,5.28,3.13,2.6,1.34,1.41,0.8,0.9,1.43],"cpi_flat":[5.32,5.08,4.59,3.08,2.67,2.4,2.22,2.11,2.05,2.02,2.01,2.02],"i_act":[0.45,0.95,1.61,2.82,3.85,4.44,5.16,5.25,5.25,5.25,5.08,4.85],"i_mod":[0.75,1.51,2.17,2.72,3.15,3.36,3.51,3.48,3.4,3.18,2.88,2.57],"u_act":[3.8,3.8,3.7,3.9,4.0,4.2,4.1,3.9,4.3,4.2,4.3,4.4],"u_mod":[3.95,3.73,3.55,3.39,3.26,3.16,3.09,3.08,3.13,3.26,3.45,3.66]},"nobs":{"pc":121,"is":119,"tr":80,"ok":122},"base_q":{"g":[0.5,0.2207,-0.0068,-0.0415,0.0413,0.0487,0.0866,0.1074,0.1249,0.1467,0.1713,0.1982,0.225,0.2499,0.2712,0.2876,0.2988,0.3049],"cpi":[3.1,3.5876,3.704,3.2769,3.0505,2.6962,2.4641,2.337,2.231,2.1622,2.1125,2.0783,2.0542,2.0373,2.0255,2.0172,2.0115,2.0075],"u":[4.8285,4.7768,4.7748,4.8168,4.8739,4.9284,4.9788,5.0224,5.0602,5.0927,5.1192,5.1394,5.1526,5.1589,5.1586,5.1527,5.1422,5.1283],"i":[3.8427,3.9798,4.1056,4.1608,4.1765,4.1424,4.0773,3.9959,3.9026,3.8035,3.7025,3.6028,3.5069,3.4167,3.3334,3.2579,3.1904,3.1309],"gap":[0.6947,0.6735,0.4249,0.1416,-0.0588,-0.2519,-0.4071,-0.5416,-0.6585,-0.7537,-0.8242,-0.8678,-0.8846,-0.8764,-0.8471,-0.8012,-0.7442,-0.6811]},"bands":{"gdp":{"p05":[-0.401,-1.926,-2.507,-3.967,-4.429],"p25":[-0.271,-1.082,-1.23,-1.162,-1.231],"p75":[0.238,0.753,0.745,0.716,0.74],"p95":[0.958,4.552,4.937,5.069,5.225]},"cpi":{"p05":[-0.533,-2.618,-2.156,-1.875,-2.002],"p25":[-0.201,-1.036,-0.917,-1.023,-0.943],"p75":[0.1,0.582,0.712,0.904,0.949],"p95":[0.316,1.766,2.107,2.124,2.125]},"unemp":{"p05":[-0.35,-1.522,-2.45,-2.55,-2.5],"p25":[-0.125,-0.425,-0.713,-1.2,-1.3],"p75":[0.1,0.5,1.0,1.5,1.6],"p95":[0.275,1.24,2.125,2.61,2.7]},"rate":{"p05":[-0.502,-2.474,-2.975,-2.723,-2.723],"p25":[-0.069,-0.2,-0.2,-0.2,-0.2],"p75":[0.119,0.466,0.945,1.189,1.189],"p95":[0.295,4.227,4.553,4.495,4.495]}}};
+const RQ={"mip":{"c":5.843972324853261,"b":0.8654992878591689,"a":0.4,"n2":24,"mgn":2.0,"r2":0.8307571681562709,"se":6.252637112266185,"n":62},"w":{"c":0.09283537789380476,"rho":0.8692763045764623,"se":0.26013679281251645,"r2":0.7774898851915818,"n":125},"ihist":[0.75,0.75,0.6132,0.1,0.1,0.1,0.1,0.1,0.1,0.1261,0.45,0.9478,1.6141,2.8234,3.8472,4.4396,5.1603,5.25,5.25,5.25,5.0842,4.8505,4.6,4.3516,4.1005,3.962,3.75,3.75],"w0":0.10000000000000009,"wm":0.039,"wd":0.075,"cpih_gap":0.2,"bt":{"q":["2022Q1","2022Q2","2022Q3","2022Q4","2023Q1","2023Q2","2023Q3","2023Q4","2024Q1","2024Q2","2024Q3","2024Q4","2025Q1","2025Q2","2025Q3","2025Q4","2026Q1","2026Q2"],"model":[8.07,10.94,11.75,12.57,12.39,10.78,9.17,6.58,5.87,4.19,3.74,3.96,4.08,4.59,4.78,4.33,3.99,3.71],"act":[8.4,11.5,12.4,13.9,13.6,11.2,9.0,5.5,4.6,3.0,3.3,3.5,3.4,4.4,4.6,4.1,3.8,3.0]},"hist":{"q":["2025Q1","2025Q2","2025Q3","2025Q4","2026Q1","2026Q2"],"rpi":[3.4,4.4,4.6,4.1,3.8,3.0],"mip":[14.0,10.3,7.8,6.5,4.9,4.4],"rpix":[3.0,4.2,4.5,4.0,3.8,2.9],"cpi":[2.8,3.5,3.8,3.4,3.1,2.8]}};
+const E2={"wage":{"coef":{"const":0.42979,"w1":0.86194,"hi":0.15678,"ug1":-0.30495,"dinact":0.28378},"t":{"const":3.58,"w1":24.96,"hi":3.94,"ug1":-2.23,"dinact":2.14},"r2":0.93,"se":0.434,"n":93},"food":{"coef":{"const":-0.22711,"f1":0.73127,"doil2":0.03227,"dhe1":0.03326,"dfx2":-0.05785,"w1":0.20603},"t":{"const":-0.69,"f1":15.43,"doil2":5.78,"dhe1":2.63,"dfx2":-2.95,"w1":1.98},"r2":0.906,"se":1.335,"n":93},"serv":{"coef":{"const":0.46235,"s1":0.694,"w1":0.11097,"cpi1":0.10875},"t":{"const":3.44,"s1":12.12,"w1":3.28,"cpi1":4.61},"r2":0.909,"se":0.351,"n":93},"pcw":{"coef":{"dp1":0.32975,"dp2":0.18368,"ug1":0.10192,"qo0":0.01087,"qo1":0.00428,"qo2":0.00037,"qo3":0.00171,"qhe0":0.04651,"qhe1":-0.00203,"qfx1":-0.00408,"qfx2":-0.01745,"qfx3":-0.00506,"qfx4":-0.01314,"wg1":0.0427},"t":{"dp1":3.16,"dp2":2.22,"ug1":0.91,"qo0":4.63,"qo1":1.42,"qo2":0.13,"qo3":0.59,"qhe0":7.4,"qhe1":-0.25,"qfx1":-0.35,"qfx2":-1.4,"qfx3":-0.41,"qfx4":-1.32,"wg1":1.7},"r2":0.778,"se":0.313,"n":93},"eri_i":{"coef":{"di":1.58601,"le1":0.24463},"t":{"di":2.93,"le1":2.74},"r2":0.171,"se":2.216,"n":124},"hist":{"q":["2024Q3","2024Q4","2025Q1","2025Q2","2025Q3","2025Q4","2026Q1","2026Q2"],"pay":[5.1,5.9,5.6,4.9,4.7,4.1,3.4,3.5],"food":[1.6,2.0,3.2,4.1,4.9,4.6,3.5,2.3],"serv":[5.2,4.8,4.9,4.9,4.8,4.5,4.4,3.5],"inact":[21.6,21.5,21.3,20.9,20.9,20.9,20.9,20.9],"lts":[2793.0,2776.0,2775.0,2780.0,2826.0,2786.0,2772.0,2774.0],"dhe4":[-22.884,-7.325,-10.604,6.417,8.825,2.304,2.985,-6.469],"doil":[-8.193,-11.52,-9.061,-21.888,-14.644,-15.929,5.633,41.781],"dfx":[2.735,3.065,-0.62,5.674,3.567,3.717,6.761,0.521],"eri":[78.39,78.75,78.25,78.95,78.33,77.52,78.09,78.07]}};
+const YEARS=[2026,2027,2028,2029,2030];
+const W=[0.25,1,1,1,1];
+const BASE={gdp:M.central.gdp,cpi:M.central.cpi,unemp:M.central.unemp,rate:M.central.rate,
+  gilt:[5.2,5.0,4.7,4.5,4.4],deficit:[4.2,3.6,2.9,2.3,1.9],debt:[95.0,96.0,96.5,96.0,95.3],wages:[3.7,3.6,3.3,3.1,3.0],
+  curbal:[-1.06,-0.14,0.10,0.66,0.82],ca:[-3.0,-3.0,-3.0,-3.0,-3.0],mkt:[3.95,4.15,3.95,3.85,3.80]};
+const LEVERS=[
+ {g:"Automatic links",open:true,items:[
+  {k:"links",l:"Let markets and investment respond",type:"check",d:true}]},
+ {g:"Energy and global",open:true,items:[
+  {k:"oil",l:"Oil and wholesale gas",min:-60,max:150,step:5,d:0,f:v=>pm(v,0)+"%",h:"% vs baseline from 2026 Q4 (baseline: Brent flat near $100). Feeds fuel prices directly and household bills at half strength two quarters later."},
+  {k:"bills",l:"Household energy bills",min:-30,max:50,step:5,d:0,f:v=>pm(v,0)+"%",h:"Extra change to the Ofgem cap from January 2027, on top of the wholesale pass-through. Baseline holds the October 2026 cap."},
+  {k:"persist",l:"Energy shock persistence",min:0,max:1,step:0.1,d:0.6,f:v=>Math.round(v*100)+"%",h:"Share of the shock still in place each following year."},
+  {k:"support",l:"Energy bill support",min:0,max:1.5,step:0.1,d:0,f:v=>(+v).toFixed(1)+"% GDP",h:"Government caps bills in 2027 and 2028, then withdraws it. Cuts CPI, adds to borrowing."},
+  {k:"food",l:"World food commodity prices",min:-30,max:60,step:5,d:0,f:v=>pm(v,0)+"%",h:"% vs baseline from 2026 Q4, with the same persistence as energy. About 30% reaches UK shop prices within a year; food is about 11% of CPI. Energy's own effect on food is already in the model."},
+  {k:"global",l:"World demand for UK exports",min:-20,max:5,step:0.5,d:0,f:v=>pm(v,1)+"%",h:"Extra change vs baseline, on top of the automatic hit to world growth when oil rises."},
+  {k:"tariff",l:"Tariffs and trade friction",min:-5,max:25,step:1,d:0,f:v=>pm(v,0)+"pp",h:"Effective tariff on UK exports. Negative = friction removed (for example an EU deal)."},
+  {k:"fx",l:"Sterling, trade-weighted",min:-30,max:15,step:1,d:0,f:v=>pm(v,0)+"%",h:"Extra move vs baseline, on top of the automatic response to rates and gilt risk. Negative = depreciation."},
+  {k:"grates",l:"Global bond yields",min:-1.5,max:1.5,step:0.25,d:0,f:v=>pm(v,2)+"pp",h:"US and euro-area long rates. Feed about 40% into gilt yields."}]},
+ {g:"Markets and credit",items:[
+  {k:"tp",l:"Gilt term premium",min:-50,max:150,step:10,d:0,f:v=>pm(v,0)+"bp",h:"Extra UK risk premium on long gilts, on top of the automatic rise with debt. Also weakens sterling when links are on."},
+  {k:"credit",l:"Bank lending spreads",min:-50,max:400,step:10,d:0,f:v=>pm(v,0)+"bp",h:"Extra tightening on top of the automatic widening in downturns. Also adds to the SME loan rate."},
+  {k:"house",l:"House prices",min:-35,max:15,step:1,d:0,f:v=>pm(v,0)+"%",h:"Extra level change vs baseline, on top of the automatic response to mortgage rates."}]},
+ {g:"Households and firms",items:[
+  {k:"sav",l:"Household saving ratio",min:-2,max:6,step:0.25,d:0,f:v=>pm(v,2)+"pp",h:"Extra shift on top of the automatic rise in precautionary saving when unemployment rises."},
+  {k:"inv",l:"Business investment",min:-30,max:10,step:1,d:0,f:v=>pm(v,0)+"%",h:"Extra confidence or capex shock (for example AI data centres), on top of the automatic response to demand."}]},
+ {g:"Supply and pay",items:[
+  {k:"prod",l:"Productivity growth",min:-1,max:1,step:0.1,d:0,f:v=>pm(v,1)+"pp",h:"pp a year vs baseline from 2027."},
+  {k:"migr",l:"Work and family migration",min:-800,max:200,step:25,d:0,f:v=>pm(v,0)+"k a year",h:"Net, vs baseline, from 2027. Moves labour supply and GDP roughly in line with population. Cuts raise pay pressure in care, health and hospitality."},
+  {k:"stu",l:"International students",min:-400,max:200,step:25,d:0,f:v=>pm(v,0)+"k a year",h:"Arrivals vs baseline, from 2027. Students work part-time, but their fees and spending are exports (about £100,000 each over a course, HEPI 2026)."},
+  {k:"nairu",l:"Sustainable unemployment rate",min:3.5,max:5.5,step:0.25,d:4.5,f:v=>(+v).toFixed(2)+"%",h:"Below this, a tight labour market starts pushing inflation up, and increasingly so the tighter it gets."},
+  {k:"inact",l:"Inactive through long-term sickness",min:-600,max:400,step:25,d:0,f:v=>pm(v,0)+"k",h:"Change vs baseline (2.78 million now), phased in over 2027. Fewer people off sick means more workers, a lower benefit bill and slightly less pay pressure."},
+  {k:"wages",l:"Second-round effects",type:"select",d:"med",opts:[["low","Low: pay reacts half as much to high inflation"],["med","Medium: as estimated on 2022-23"],["high","High: pay reacts 50% more"]]},
+  {k:"wshock",l:"Pay settlement shock",min:-1,max:2,step:0.25,d:0,f:v=>pm(v,2)+"pp",h:"Extra pay growth from 2027 (NLW, public sector deals, union claims)."},
+  {k:"expect",l:"Inflation expectations",min:-2,max:1.5,step:0.1,d:0,f:v=>pm(v,1)+"pp",h:"Extra de-anchoring on top of the automatic drift when inflation overshoots."}]},
+ {g:"Fiscal",items:[
+  {k:"spend",l:"Day-to-day spending",min:-3,max:6,step:0.1,d:0,f:v=>pm(v,1)+"% GDP",h:"vs baseline."},
+  {k:"tax",l:"Household taxes (excluding VAT)",min:-2,max:4,step:0.1,d:0,f:v=>pm(v,1)+"% GDP",h:"Positive = tax rises."},
+  {k:"vat",l:"VAT rate",min:-3,max:12,step:0.5,d:0,f:v=>pm(v,1)+"pp",h:"From 2027. One-off jump in CPI; about 0.25% of GDP in receipts per point."},
+  {k:"biztax",l:"Business investment tax relief",min:0,max:1.5,step:0.1,d:0,f:v=>(+v).toFixed(1)+"% GDP",h:"Full-expensing-style relief, by cost. OBR: permanent full expensing (about 0.3% of GDP) raises business investment about 1.2% a year and the capital stock 0.5% long run."},
+  {k:"guar",l:"Government loan guarantees",min:0,max:3,step:0.25,d:0,f:v=>(+v).toFixed(2)+"% GDP",h:"Guaranteed business lending, % of GDP. Cuts SME spreads about 50bp per 1% of GDP; expected losses of 10% a year of the guaranteed stock add to borrowing (judgement)."},
+  {k:"pubinv",l:"Public investment",min:-0.5,max:3,step:0.1,d:0,f:v=>pm(v,1)+"% GDP",h:"Borrowed. Bigger multiplier than current spending and adds capacity from 2028 (0.1% of GDP a year per 1% of GDP invested)."},
+  {k:"hroom",l:"Fiscal headroom starting point",type:"select",d:"obr",opts:[["obr","OBR March 2026: £23.6bn (stability rule)"],["sep","September estimates: about £10bn (investment rule assumed to lose the same £13.6bn)"]]}]},
+ {g:"Crisis mechanics",items:[
+  {k:"lb",l:"Lowest Bank Rate",min:-0.5,max:0.5,step:0.1,d:0.1,f:v=>(+v).toFixed(1)+"%",h:"The floor the MPC will cut to. Below 0.1% means negative rates."},
+  {k:"qe",l:"QE at the floor",type:"select",d:"std",opts:[["std","Standard: about 50bp off gilt yields per 1pp of missing cuts"],["big","Aggressive: twice as much"],["none","None (1930s-style)"]]},
+  {k:"buffer",l:"Bank capital buffers",type:"select",d:"today",opts:[["today","Today's (post-2008 rules)"],["strong","Stronger"],["weak","2008-era (thin)"]]},
+  {k:"rescue",l:"Government stands behind the banks",type:"check",d:true}]},
+ {g:"Monetary policy",items:[
+  {k:"mpc",l:"MPC reacts (Taylor-type rule)",type:"check",d:true},
+  {k:"hawk",l:"MPC stance",type:"select",d:"std",opts:[["dove","Dovish: looks through more"],["std","Standard"],["hawk","Hawkish: leans hard on inflation"]]},
+  {k:"rate",l:"Bank Rate override",min:-1.5,max:1.5,step:0.25,d:0,f:v=>pm(v,2)+"pp",h:"pp added to the rate path, on top of any MPC reaction."}]}
+];
+function pm(v,dp){v=+v;return (v>0?"+":v<0?"−":"")+Math.abs(v).toFixed(dp)}
+const DEFAULTS={};LEVERS.forEach(g=>g.items.forEach(x=>DEFAULTS[x.k]=x.d));
+const PRESETS=[
+ {g:"Energy and geopolitics",items:[
+  ["Strait reopens",{oil:-25,persist:0.7,tp:-20,global:1,wages:"low"},"Hormuz reopens and oil falls back. The upside case on the Outlook tab."],
+  ["Prolonged disruption",{oil:40,persist:0.8,tp:50,wages:"high"},"Disruption runs through 2027 with pay catching up. The downside case on the Outlook tab."],
+  ["World food price spike",{food:40,persist:0.7},"World food commodity prices up 40% (drought, export bans, fertiliser costs), easing slowly. UK food inflation rises by about 8 points at the peak."],
+  ["January cap jump",{bills:15,wages:"high"},"Ofgem raises the January 2027 cap 15% more than the baseline assumes, with pay deals catching up."],
+  ["Energy bill support",{oil:40,persist:0.8,tp:60,wages:"high",support:0.8},"Prolonged disruption, but the government caps bills at 0.8% of GDP a year for two years. Lower CPI peak, higher borrowing, and a bump when support ends."],
+  ["1970s stagflation",{oil:70,persist:0.9,wages:"high",wshock:1,expect:0.5,hawk:"dove"},"Large, lasting energy shock, pay catch-up and drifting expectations with a dovish MPC."]]},
+ {g:"Wars ending",items:[
+  ["Iran peace deal",{food:-5,oil:-30,persist:0.8,tp:-25,global:1,inv:3,expect:-0.2,wages:"low"},"A lasting settlement: Hormuz fully reopens, oil falls about 30% and stays lower, gilt risk premiums unwind and firms release delayed investment. Assumptions are judgement."],
+  ["Ukraine peace settlement",{food:-10,bills:-10,oil:-10,persist:0.8,tp:-10,global:0.5,inv:3,expect:-0.1},"A ceasefire that holds: European gas and power prices ease, bills about 10% lower, a small lift to European demand and confidence. Defence spending stays at planned levels. Assumptions are judgement."],
+  ["Both wars end",{food:-12,oil:-35,bills:-10,persist:0.8,tp:-30,global:1.5,inv:5,expect:-0.25,wages:"low"},"The Iran and Ukraine settlements together: the full peace dividend on energy, risk premiums and investment. Assumptions are judgement."]]},
+ {g:"Wars starting",items:[
+  ["Russia NATO confrontation",{food:25,bills:30,oil:25,persist:0.8,global:-3,tp:40,spend:1.5,inv:-5,sav:1,expect:0.25,wages:"high"},"A direct standoff short of UK combat: European gas shock (bills up 30%, oil up 25%), weaker European demand, and defence up 1.5% of GDP funded by borrowing. Assumptions are judgement."],
+  ["Russia NATO, defence paid by tax",{food:25,bills:30,oil:25,persist:0.8,global:-3,tp:20,spend:1.5,tax:1.5,inv:-5,sav:1,expect:0.25,wages:"high"},"As above, but the extra defence spending is matched by tax rises. Similar growth cost, much less debt. Assumptions are judgement."],
+  ["China Taiwan blockade",{global:-6,tariff:15,prod:-0.2,inv:-10,oil:15,persist:0.7,fx:-5,grates:0.5,sav:1.5,credit:50,expect:0.25},"A blockade that halts Taiwan's chip exports: world demand down 6%, trade friction like a 15 point tariff, supply-chain losses to productivity and investment, tighter credit. Physical shortages are only approximated. Least certain scenario."]]},
+ {g:"Wars escalating",items:[
+  ["Wider Gulf war, Hormuz shut",{food:20,oil:80,persist:0.85,bills:20,tp:60,global:-2,wages:"high",expect:0.3,inv:-5,sav:1},"The Iran conflict widens to Gulf producers and Hormuz stays shut for longer: oil up 80%, bills up 20%, higher gilt premiums and a weaker world economy. Assumptions are judgement."],
+  ["Ukraine war hits energy infrastructure",{food:10,bills:25,oil:15,persist:0.8,global:-1.5,tp:25,spend:0.5,inv:-3,expect:0.15,wages:"high"},"Escalation against European pipelines and grids: bills up 25%, oil up 15%, softer European demand and a modest defence top-up. Assumptions are judgement."],
+  ["Two fronts: Gulf and Taiwan",{food:25,oil:90,persist:0.85,bills:20,tp:80,global:-8,tariff:15,prod:-0.2,inv:-15,fx:-5,grates:0.5,sav:2,credit:75,expect:0.5,wages:"high"},"A widened Gulf war and a Taiwan blockade at the same time. A recession on the scale of 2008 without the banking crisis. Assumptions are judgement."]]},
+ {g:"Global economy",items:[
+  ["US tariff escalation",{tariff:10,global:-1,fx:-3,grates:0.3},"10pp effective tariff on UK exports, weaker world trade and a softer pound."],
+  ["EU reset",{tariff:-3,global:1,prod:0.1,migr:25},"SPS agreement and youth mobility cut trade friction and add a little productivity and labour supply."],
+  ["Global recession",{global:-5,oil:-30,persist:0.6,grates:-1,credit:60,house:-5},"World demand slumps, oil and global yields fall, credit tightens."],
+  ["US bond sell-off",{grates:1,tp:40,fx:-2},"US yields jump and drag gilts with them."]]},
+ {g:"Markets and finance",items:[
+  ["Gilt market stress",{tp:120},"Investors demand 120bp more to hold long gilts."],
+  ["Unfunded tax cuts",{tax:-1.2,tp:130,fx:-2},"A 2022 mini-Budget style package: tax cuts without funding, a gilt sell-off and a weaker pound."],
+  ["Sterling slide",{fx:-12,tp:40},"A 12% fall in the pound with a risk premium on gilts."],
+  ["Credit crunch",{credit:150,inv:-5,house:-8},"Banks tighten sharply; investment and house prices fall."],
+  ["Housing downturn",{house:-12,credit:40,sav:0.5},"House prices fall 12% as mortgage refixes bite."]]},
+ {g:"Households and firms",items:[
+  ["Consumer caution",{sav:1.5},"Households rebuild savings and cut spending."],
+  ["Consumer rebound",{sav:-1.2,house:4},"Households run down savings; house prices firm."],
+  ["AI capex boom",{inv:6,prod:0.3},"Strong business investment in AI and data centres with a modest productivity pay-off."],
+  ["AI productivity dividend",{prod:0.5},"Productivity growth 0.5pp a year higher from 2027, the OBR's optimistic AI case."],
+  ["Productivity stall",{prod:-0.4},"Productivity reverts to the weak post-2008 trend."]]},
+ {g:"Labour and supply",items:[
+  ["Wage-price spiral",{wshock:1.5,expect:0.7,wages:"high"},"2027 pay rounds overshoot and expectations drift up."],
+  ["Net migration to zero",{migr:-99,stu:-72},"Net migration cut from its latest level (171,000 in 2025) to zero from 2027."],
+  ["Immigration stopped (extreme test)",{migr:-409,stu:-294},"All non-British immigration stops from 2027: 703,000 arrived in 2025, of whom 294,000 came to study. British returners and emigration continue, so net migration turns to about minus 530,000 a year. Not practical under current law; an outer bound."],
+  ["Welfare reform works",{inact:-200},"200,000 fewer people out of work through long-term sickness by 2028. More workers and a lower benefit bill; DWP targets, not an OBR-certified effect."],
+  ["Sickness keeps rising",{inact:200},"Long-term sickness inactivity rises by another 200,000, as it did from 2019 to 2023."],
+  ["Migration cut",{migr:-150},"Net migration 150k a year lower than baseline."],
+  ["Migration rise",{migr:150},"Net migration 150k a year higher than baseline."]]},
+ {g:"Global downturns",items:[
+  ["2008-style financial crisis",{global:-12,credit:200,house:-18,inv:-15,sav:3,oil:-45,persist:0.6,fx:-20,grates:-1,wages:"low",buffer:"weak"},"A global banking crisis: world trade down 12%, lending spreads up 200bp before the automatic widening, house prices down 18%, investment and confidence collapse, oil falls and sterling drops 20%, as in 2008 to 2009."],
+  ["1930s-style depression",{global:-20,credit:250,house:-25,inv:-30,sav:5,oil:-60,persist:0.9,tariff:20,expect:-1.5,prod:-0.5,grates:-1,tax:1.0,spend:-1.0,hawk:"hawk",wages:"low",qe:"none",buffer:"weak",rescue:false},"Everything goes wrong at once: a banking collapse with no rescue, a protectionist tariff spiral, falling prices, lasting productivity damage, no QE, and policy that tightens into the slump."],
+  ["Depression, modern response",{global:-20,credit:250,house:-25,inv:-30,sav:5,oil:-60,persist:0.9,tariff:20,expect:-1.5,prod:-0.5,grates:-1,wages:"low",qe:"big",lb:0,rescue:true,spend:3.0,hawk:"dove"},"The same global shocks, met the modern way: rates to zero, aggressive QE, the state standing behind the banks, and fiscal support of 3% of GDP a year instead of austerity."],
+  ["2008 crisis, today's banks",{global:-12,credit:200,house:-18,inv:-15,sav:3,oil:-45,persist:0.6,fx:-20,grates:-1,wages:"low"},"The 2008-style shock hitting today's better-capitalised banks. Compare with the 2008-era version to see what the extra capital buys."],
+  ["Global trade war",{tariff:20,global:-8,fx:-5,grates:0.5,inv:-8,prod:-0.2},"A tit-for-tat tariff spiral: 20pp tariffs on UK exports, world trade down 8%, investment on hold."],
+  ["Worst policy mix",{pubinv:-0.5,tax:-1,spend:1.5,vat:2,migr:-300,stu:-25,inact:300,tariff:5,rate:1,tp:120},"Worst of about 3,000 combinations of policy levers within realistic ranges: unfunded tax cuts and extra day-to-day spending, a VAT rise, cuts to public investment, 300,000 fewer work migrants, rising sickness, new trade barriers, rates a point too high and a 2022-style loss of market confidence in gilts."],
+  ["Worst case: two wars plus policy mistakes",{oil:90,persist:0.85,bills:20,tp:120,global:-8,tariff:20,prod:-0.2,inv:-15,fx:-5,grates:0.5,sav:2,credit:75,expect:0.5,wages:"high",food:25,pubinv:-0.5,tax:-1,spend:1.5,vat:2,migr:-300,stu:-25,inact:300,rate:1},"A widened Gulf war and a Taiwan blockade together, met with the worst policy mix. Trade friction adds the blockade's 15 points to 5 points of new UK barriers; the gilt premium is the larger 120bp."],
+  ["UK policy error",{tax:1.5,spend:-1.5,rate:1.5,hawk:"hawk"},"Tightening into a slowdown: 3% of GDP of fiscal consolidation and Bank Rate 1.5pp higher than needed."]]},
+ {g:"Party platforms (hypothetical: in force from 2027)",items:[
+  ["Labour (current government plans)",{},"The central path already reflects current government policy, as the OBR and Bank forecasts do. Recent cost-of-living measures (electricity VAT cut to March 2027, bus fare cap, pub rates relief) are too small to show. The Autumn Budget on 28 October may change this."],
+  ["Conservative, as costed by party",{spend:-1.46,tax:-0.62,house:2},"October 2025 platform: £47bn of savings (welfare £23bn, civil service £8bn, overseas aid £7bn, social housing restricted to British nationals £3.9bn, asylum hotels £3.5bn, GB Energy £1.6bn), over £20bn of tax cuts including abolishing stamp duty (about £10bn), the rest to cut borrowing. Stamp duty abolition assumed to lift house prices about 2%."],
+  ["Conservative, savings half delivered",{spend:-0.73,tax:-0.62,house:2},"As above, but only half the £47bn of savings is achieved. The Institute for Government called the £23bn welfare cut unprecedented. The same 50% test is applied to every party's offsetting measures."],
+  ["Reform UK, as costed by party",{tax:-0.34,spend:-2.36},"September 2026 platform: personal allowance raised to £15,000 (£17.7bn in year one, £21bn by year five) and £80bn of savings and revenue: welfare £52bn, net zero subsidies £10bn, overseas aid £7bn, civil service and quangos £7bn, and £10bn from a higher immigration health surcharge and a levy on migrant workers. Tax lever nets the allowance cost against the £10bn migrant levies."],
+  ["Reform UK, savings half delivered",{tax:-0.49,spend:-1.18},"As above, but only half the £70bn of spending savings and half the £10bn of migrant levies are achieved. The IFS has warned that savings on this scale would need large, unspecified cuts to public services."],
+  ["Liberal Democrat, as costed by party",{tax:0.84,spend:0.83,pubinv:0.61,tariff:-3},"Latest fully costed platform (2024 manifesto): £27bn of tax rises, £26.8bn more day-to-day spending (including £8.4bn for health and care), £19.7bn a year more investment funded by borrowing, and closer EU trade."],
+  ["Liberal Democrat, revenue half delivered",{tax:0.42,spend:0.83,pubinv:0.61,tariff:-3},"As above, but the tax rises raise only half of the £27bn. The IFS said the risks to the revenue were on the downside."],
+  ["Green, as costed by party",{tax:2.5,vat:11,spend:5.0,pubinv:2.8,tariff:-5,support:0.26},"Latest costed platform (2024 manifesto) updated for 2026 statements: £170bn of tax rises, of which a carbon tax of about £90bn (modelled like a consumption tax, so it raises prices once) and £80bn from wealth, capital gains and high earners; £160bn more day-to-day spending; £90bn a year more investment; about £80bn a year more borrowing; rejoining the EU; £8.4bn to cap energy bills."],
+  ["Green, revenue half delivered",{tax:1.25,vat:5.5,spend:5.0,pubinv:2.8,tariff:-5,support:0.26},"As above, but taxes raise only half the planned £170bn. The IFS judged it unlikely the proposed taxes would raise the sums claimed."]]},
+ {g:"Growth booms",items:[
+  ["1980s-style boom",{tax:-1.0,credit:-50,house:15,sav:-2,oil:-30,persist:0.8,inv:6,global:2,prod:0.3},"Lawson-style: tax cuts, credit deregulation, a house-price and consumer boom, cheap oil, strong investment and world growth."],
+  ["Productivity-led boom",{prod:0.8,inv:8,pubinv:0.8,migr:100,tariff:-3,global:1,oil:-15,persist:0.8},"Growth from supply: an AI productivity surge, strong private and public investment, easier EU trade, higher labour supply and cheaper energy."],
+  ["Lower RPI, pro-business mix",{vat:-2,guar:2,pubinv:1,tax:1,spend:-0.5,tariff:-3},"Government levers only; the Bank sets rates by its usual rule. Switches 1% of GDP of tax from VAT to household taxes and trims day-to-day spending, then uses the room for public investment and £60bn-scale loan guarantees, plus an EU trade reset. Debt ends where the central path does."],
+  ["Best mix, September 2026",{pubinv:1.5,tax:0.75,spend:-1,vat:-1,biztax:0.4,migr:150,inact:-300,rate:0.25},"Best of about 4,000 combinations of government and Bank levers, within realistic ranges, judged on GDP per head by 2040 and GDP by 2030. It must keep inflation no higher than central, unemployment at or above 4.5%, debt no higher, and both fiscal rules met from the £10bn September starting point. Public investment of 1.5% of GDP paid for by tax and day-to-day spending restraint, a 1 point VAT cut, investment tax relief, 150,000 more work migrants, 300,000 fewer people off sick, and a quarter point on Bank Rate."],
+  ["Best policy mix",{pubinv:1.0,tax:0.5,migr:150,rate:-0.5},"The best mix the government and Bank control, found by searching 2,592 combinations: public investment funded by tax, higher migration and an early half-point rate cut. It keeps inflation at target and unemployment at 4% or above, and brings debt below the central path."]]},
+ {g:"Fiscal and monetary policy",items:[
+  ["Tight Budget",{tax:0.6,spend:-0.3},"A moderate consolidation at the Autumn Budget."],
+  ["Big consolidation",{tax:1,spend:-0.8},"1.8% of GDP of tightening to rebuild fiscal headroom."],
+  ["VAT to 22%",{vat:2},"VAT up 2 points from 2027."],
+  ["Borrow to invest",{pubinv:0.8,tp:20},"Public investment up 0.8% of GDP a year, with a small market premium."],
+  ["November hike",{rate:0.25},"A quarter point more than markets expect from November, held throughout. The central path already prices most of a November hike."],
+  ["Emergency cuts",{rate:-1,mpc:false},"The MPC cuts 1pp and stops reacting to inflation."],
+  ["Disruption, hawkish MPC",{oil:40,persist:0.8,tp:50,wages:"high",hawk:"hawk"},"Prolonged disruption with a Committee that leans hard against inflation. Compare with the plain version."],
+  ["Disruption, dovish MPC",{oil:40,persist:0.8,tp:50,wages:"high",hawk:"dove"},"Prolonged disruption with a Committee that looks through more of the shock."]]}
+];
+const PRESET_MAP={};PRESETS.forEach(g=>g.items.forEach(x=>PRESET_MAP[x[0]]={set:x[1],desc:x[2]}));
+
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const charts={};
+function baseOpts(unit){
+  const ink=css("--muted"),line=css("--line");
+  return {responsive:true,maintainAspectRatio:false,animation:false,
+    plugins:{legend:{display:false},tooltip:{mode:"index",intersect:false,callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(1)}${unit}`}}},
+    scales:{x:{grid:{display:false},ticks:{color:ink,font:{family:"IBM Plex Mono",size:11}},border:{color:line}},
+      y:{grid:{color:line},ticks:{color:ink,font:{family:"IBM Plex Mono",size:11},callback:v=>v.toFixed(1)},border:{display:false}}}};
+}
+function ds(label,data,color,dash,w){return {label,data,borderColor:color,backgroundColor:color,borderWidth:w||2,borderDash:dash||[],pointRadius:3,pointHoverRadius:5,tension:0.25}}
+function panel(host,id,title){
+  const d=document.createElement("div");d.className="panel";
+  d.innerHTML=`<h3>${title}</h3><div class="chartbox"><canvas id="${id}"></canvas></div>`;host.appendChild(d);
+  return document.getElementById(id);
+}
+function makeChart(canvas,datasets,unit){return new Chart(canvas,{type:"line",data:{labels:YEARS,datasets},options:baseOpts(unit)});}
+const f1=v=>(Math.abs(v)<0.05?0:v).toFixed(1);
+const sg=v=>(v>0.049?"+":"")+f1(v);
+
+// ---------- Estimated quarterly engine ----------
+const C=M.coef, ST=M.state, NQ=18, NH=ST.q.length; // 2026Q3..2030Q4
+const E=E2, WG=E.wage.coef, FD=E.food.coef, SV=E.serv.coef, GW=E.pcw.coef.wg1;
+const kIS=1-C.is.gap1-C.is.gap2;             // converts steady-state demand effects to quarterly impulses
+const rhoPC=C.pc.dp1+C.pc.dp2;
+const qYear=k=>2026+Math.floor((k+2)/4);      // k=0 -> 2026Q3
+const qNum=k=>((k+2)%4)+1;
+let FX_PT=-0.02;                              // calibrated trade-weighted sterling pass-through per lag (4 lags): 10% fall adds about 2% to prices (Forbes et al. range 0.1 to 0.3)
+let DSCALE=1;                                 // demand-multiplier scale (1 = central; varied in the uncertainty draws)
+const LK={fx_i:1.586,fx_rho:0.245,fx_tp:-4.0,h_speed:0.25,tp_debt:0.05,inv_gap:2.5,inv_cap:0.01,cr_down:20,cr_up:0,cr_house:0,cr_speed:0.5,sav_u:0.3,sav_speed:0.3,exp_pi:0.04,exp_decay:0.97,w_oil:-0.04,w_speed:0.5,pc_tight:0.1,fisc_L:0.45,qe_cap:2.0,qe_dem:0.6,cr_rho:0.889,cr_imp:20.8,h_rho:0.648,h_mort:-0.298,s_rho:0.854,s_du:0.374,dd:0.1,dd_neg:2,bank_u:0.41,bank_h:0.066,bank_speed:0.5,bank_spread:100,bank_inv:-3,rescue_cut:0.5,rescue_cost:0.5,
+  food_pt:0.3,food_speed:0.35,food_w:0.114,inact_gdp:0.15,pubcap:0.1};
+function runQ(p,base,tpY,prevI){
+  const baseI=base?base.I:null, links=!!(p.links&&base);
+  const H=NH+NQ;
+  const gap=ST.gap.slice(),dp=ST.dp.slice(),lp=ST.lp.slice(),I=ST.i.slice(),u=ST.u.slice(),cpi=ST.cpi.slice(),lo=ST.lo.slice(),lfx=ST.lfx.slice(),lhe=ST.lhe.slice(),g=ST.g.slice();
+  const one=new Array(NH).fill(0), sh=ST.i.slice(), core=ST.cpi.slice(), oilDevA=[], heDevA=[];
+  const TPuk=new Array(NH).fill(0), fxE=new Array(NH).fill(0), hE=new Array(NH).fill(0), hTot=new Array(NH).fill(0), invE=new Array(NH).fill(0), tpE=new Array(NH).fill(0), fxTot=new Array(NH).fill(0), crE=new Array(NH).fill(0), crTot=new Array(NH).fill(0), sE=new Array(NH).fill(0), eE=new Array(NH).fill(0), wE=new Array(NH).fill(0), qeTP=new Array(NH).fill(0), bkE=new Array(NH).fill(0), bkRaw=new Array(NH).fill(0), ddA=new Array(NH).fill(0);
+  const qeS={none:0,std:0.4,big:0.8}[p.qe], buf={weak:1.0,today:3.5,strong:5}[p.buffer];
+  const mortA=new Array(NH).fill(0), dhE=new Array(NH).fill(0), uDevA=new Array(NH).fill(0), ev2=new Array(NH).fill(0);
+  // new blocks: pay (estimated wage equation), food (estimated) and services (estimated), with the last 8 quarters of data
+  const pay=E.hist.pay.slice(), payEq=E.hist.pay.slice(), foodEq=E.hist.food.slice(), food=E.hist.food.slice(), serv=E.hist.serv.slice(), fLv=new Array(NH).fill(0), inL=new Array(NH).fill(0), rent=new Array(NH).fill(0);
+  const hiS={low:0.5,med:1,high:1.5}[p.wages], phiS={dove:0.75,std:1,hawk:1.4}[p.hawk];
+  const Lsup=0.0014*(p.migr+0.3*p.stu);
+  let shareDev=0;                  // change in immigrant share of population, pp
+  // expected average deviation of Bank Rate from the central path over quarters t..t+n-1, taken from the previous pass (model-consistent expectations)
+  const expAvg=(t,n)=>{const last=H-1;let s_=0;for(let j=t;j<t+n;j++){const jj=Math.min(j,last);s_+=(prevI[jj]-base.I[jj])*(j>last?Math.pow(0.8,j-last):1);}return s_/n;};
+  for(let k=0;k<NQ;k++){
+    const t=NH+k, on=k>=1?1:0, on2=k>=2?1:0;
+    // ---- automatic links (deviations from the baseline run) ----
+    const iDev1=links?I[t-1]-base.I[t-1]:0, gDev1=links?gap[t-1]-base.gap[t-1]:0;
+    ev2[t]=links&&on?(prevI?expAvg(t,8):iDev1):0;           // two-year expected rate path (drives fixed mortgage rates and sterling)
+    const uDevB=links?u[t-1]-base.u[t-1]:0;
+    bkRaw[t]=links?Math.max(0,LK.bank_u*Math.max(0,uDevB)+LK.bank_h*Math.max(0,-hTot[t-1])-buf):0;
+    bkE[t]=bkE[t-1]+LK.bank_speed*(bkRaw[t]*(p.rescue?LK.rescue_cut:1)-bkE[t-1]);
+    tpE[t]=links&&tpY?tpY[qYear(k)-2026]:0;
+    TPuk[t]=on*(p.tp/100)+tpE[t];
+    fxE[t]=links?fxE[t-1]+LK.fx_i*(ev2[t]-ev2[t-1])+LK.fx_rho*(fxE[t-1]-fxE[t-2])+LK.fx_tp*(TPuk[t]-TPuk[t-1]):0;
+    fxTot[t]=on*p.fx+fxE[t];
+    crE[t]=links?crE[t-1]+LK.cr_speed*(Math.min(400,LK.cr_down*Math.max(0,-gDev1))-crE[t-1]):0;
+    crTot[t]=on*p.credit-50*on*p.guar+crE[t]+Math.min(300,LK.bank_spread*bkE[t]);
+    const mortDev=ev2[t]+0.5*(TPuk[t]+qeTP[t-1])+0.5*crTot[t]/100; mortA[t]=mortDev;
+    dhE[t]=links?LK.h_rho*dhE[t-1]+LK.h_mort*(mortA[t-2]-(t-6>=0?mortA[t-6]:0)):0;
+    hE[t]=hE[t-1]+dhE[t];
+    const dShare=on2*(p.migr+p.stu)/4/690; shareDev+=dShare;
+    hTot[t]=on*p.house+hE[t]+0.8*shareDev;
+    rent[t]=rent[t-1]+0.75*dShare;   // rents: MAC 2026, about 0.75% per 1pp of immigrant share
+    invE[t]=links?LK.inv_gap*gDev1+LK.bank_inv*bkE[t]:0;
+    const qEndo=(k>=6)?LK.inv_cap*invE[t-6]:0;
+    const oilDev=on?p.oil*Math.pow(p.persist,(k-1)/4):0; oilDevA.push(oilDev);
+    const uDev1=links?u[t-1]-base.u[t-1]:0, cDev1=links?core[t-1]-base.core[t-1]:0;
+    uDevA[t-1]=uDev1; sE[t]=links?LK.s_rho*sE[t-1]+LK.s_du*(uDev1-(t-5>=0?uDevA[t-5]:0)):0;
+    eE[t]=links?LK.exp_decay*eE[t-1]+LK.exp_pi/phiS*cDev1:0;
+    wE[t]=links?wE[t-1]+LK.w_speed*(LK.w_oil*Math.max(0,oilDev)-wE[t-1]):0;
+    lo[t]=ST.path.lo[k]+Math.log(1+oilDev/100)*100;
+    lfx[t]=ST.path.lfx[k]+Math.log(1+fxTot[t]/100)*100;
+    const oilLag=k>=3?p.oil*Math.pow(p.persist,(k-3)/4):0;
+    const supOn=(k>=2&&k<=9)?p.support:0;
+    const heDev=0.5*oilLag+on2*p.bills;
+    const supLog=Math.log(Math.max(0.05,1-supOn/2.75));
+    heDevA.push(heDev-(supOn/2.75*100));
+    lhe[t]=ST.path.lhe[k]+Math.log(1+heDev/100)*100+supLog*100;
+    const supPrev=(k-1>=2&&k-1<=9)?p.support:0;
+    const supLogPrev=Math.log(Math.max(0.05,1-supPrev/2.75));
+    const vatJump=(k===2)?0.45*p.vat:0;
+    one[t]=one[t-1]+C.pc.qhe0*(supLog-supLogPrev)*100+vatJump;
+    // world food commodity prices: about 30% reaches UK food prices over a year (judgement, in line with BoE estimates)
+    const Fcur=on*p.food*Math.pow(p.persist,(k-1)/4);
+    fLv[t]=fLv[t-1]+LK.food_speed*(LK.food_pt*Fcur-fLv[t-1]);
+    // long-term sickness: change in the inactivity rate (pp of 16-64 population, 1pp = 420,000 people), phased in over 2027
+    const ramp=on2*Math.min(1,(k-1)/4), rampPrev=k-1>=2?Math.min(1,(k-2)/4):0;
+    inL[t]=ramp*p.inact/420;
+    // demand impulses (steady-state effects, % of GDP, before monetary response)
+    const G=on*p.spend, T=on*(p.tax+0.25*p.vat*(k>=2?1:0)), PI_=on*p.pubinv, X=on*(p.global-0.1*p.tariff)+wE[t];
+    const TPpp=on*(p.tp/100+0.4*p.grates)+tpE[t]+qeTP[t-1];
+    const pDev=links?lp[t-1]-base.lp[t-1]:0;
+    ddA[t]=LK.dd*Math.min(0,pDev)*(core[t-1]<0?LK.dd_neg:1);
+    const D=DSCALE*kIS*(0.6*G-0.35*T+1.0*PI_+0.3*X-0.6*(on*p.sav+sE[t])+0.1*on*(p.inv+4*p.biztax)+0.25*(on2*p.stu/100)*Math.min(1,(k-1)/8)-0.5*crTot[t]/100+0.03*hTot[t]-0.4*TPpp-LK.qe_dem*qeTP[t-1]-0.04*fxTot[t]-0.01*oilDev-0.025*heDevA[k]-0.063*fLv[t]+0.1*LK.bank_inv*bkE[t]+ddA[t]);
+    gap[t]=C.is.gap1*gap[t-1]+C.is.gap2*gap[t-2]+C.RG*(I[t-2]-core[t-2]-ST.rstar)+C.OILD*(lo[t-1]-lo[t-5])+D+(k===0?(ST.gaf||0):0);
+    const anchor=0.5+(on*p.expect+eE[t])/4;
+    const q_=on2*p.prod+qEndo+(k>=4?0.1*p.biztax:0)+(k>=6?LK.pubcap*p.pubinv:0);
+    const wsE=on2*0.15*Math.max(0,-p.migr)/100; // shortage pay premium in care, health, hospitality (judgement)
+    // pay: estimated wage equation; inflation above 4% feeds through strongly (2022-23 evidence); extra pay shocks are pp of pay growth
+    payEq[t]=WG.const+WG.w1*payEq[t-1]+hiS*WG.hi*Math.max(0,cpi[t-1]-4)+WG.ug1*(u[t-1]-ST.ustar)+WG.dinact*(inL[t-1]-(t-5>=0?inL[t-5]:0));
+    pay[t]=payEq[t]+on2*p.wshock+wsE;
+    const wageDev=base?pay[t-1]-base.pay[t-1]:0;
+    let d_=anchor+(C.pc.dp1*(dp[t-1]-anchor)+C.pc.dp2*(dp[t-2]-anchor))+C.pc.ug1*(u[t-1]-ST.ustar)
+      +C.pc.qo0*(lo[t]-lo[t-1])+C.pc.qo1*(lo[t-1]-lo[t-2])+C.pc.qo2*(lo[t-2]-lo[t-3])+C.pc.qo3*(lo[t-3]-lo[t-4])
+      +C.pc.qhe0*(lhe[t]-lhe[t-1])+C.pc.qhe1*(lhe[t-1]-lhe[t-2])
+      +FX_PT*((lfx[t-1]-lfx[t-2])+(lfx[t-2]-lfx[t-3])+(lfx[t-3]-lfx[t-4])+(lfx[t-4]-lfx[t-5]))
+      +LK.pc_tight*Math.pow(Math.max(0,p.nairu-u[t-1]),2)+GW*wageDev+LK.food_w*(fLv[t]-fLv[t-1])+0.084*0.75*dShare-0.0197*q_-0.1*on2*Lsup/4+vatJump+(k===0?ST.af:0);
+    dp[t]=d_;
+    lp[t]=lp[t-1]+d_+ST.seas[String(qNum(k))];
+    cpi[t]=(Math.exp((lp[t]-lp[t-4])/100)-1)*100;
+    // food (estimated on oil, household energy, sterling and pay) plus the world food lever; services (estimated on pay and inflation)
+    foodEq[t]=FD.const+FD.f1*foodEq[t-1]+FD.doil2*(lo[t-2]-lo[t-6])+FD.dhe1*(lhe[t-1]-lhe[t-5])+FD.dfx2*(lfx[t-2]-lfx[t-6])+FD.w1*pay[t-1];
+    food[t]=foodEq[t]+(fLv[t]-fLv[t-4]);
+    serv[t]=SV.const+SV.s1*serv[t-1]+SV.w1*pay[t-1]+SV.cpi1*cpi[t-1];
+    g[t]=ST.gpot+gap[t]-gap[t-1]+q_/4+on2*Lsup/4-LK.inact_gdp*(p.inact/100)*(ramp-rampPrev);
+    const du=C.ok.du1*(u[t-1]-u[t-2])+C.ok.gg*(gap[t]-gap[t-1])+C.ok.gg1*(gap[t-1]-gap[t-2]);
+    u[t]=u[t-1]+du+(k===2?0.15*p.wshock+0.03*p.migr/100:0);
+    const piRule=cpi[t]-(one[t]-(t-4>=0?one[t-4]:0)); core[t]=piRule;
+    const off=k>=1?p.rate:0;
+    if(k===0) sh[t]=3.75;
+    else if(!p.mpc&&baseI) sh[t]=baseI[t];
+    else sh[t]=C.tr.i1*sh[t-1]+C.tr.pi*phiS*piRule+C.tr.gap*gap[t]+C.tr.rstar*ST.rstar+C.tr.const;
+    I[t]=Math.max(sh[t]+off,p.lb);
+    qeTP[t]=-Math.min(LK.qe_cap,qeS*Math.max(0,p.lb-(sh[t]+off)));
+  }
+  // ---- RPI build-up on the RPI basket ----
+  const iAll=RQ.ihist.concat(I.slice(NH)), n0=RQ.ihist.length;
+  const ma=(j,n)=>{let s_=0;for(let z=j-n+1;z<=j;z++)s_+=iAll[z];return s_/n;};
+  const eff=j=>RQ.mip.a*ma(j,4)+(1-RQ.mip.a)*ma(j,RQ.mip.n2)+RQ.mip.mgn;
+  const rpi=new Array(NH).fill(NaN), mip=new Array(NH).fill(NaN), wedge=new Array(NH).fill(NaN), rOld=new Array(NH).fill(NaN);
+  RQ.hist.q.forEach((q,j)=>{const t=ST.q.indexOf(q);if(t>=0){rpi[t]=RQ.hist.rpi[j];mip[t]=RQ.hist.mip[j];wedge[t]=RQ.hist.rpix[j]-RQ.hist.cpi[j];rOld[t]=RQ.hist.rpi[j];}});
+  let w_=RQ.w0;
+  const share=[1/12,1/3,7/12,5/6];
+  for(let k=0;k<NQ;k++){
+    const t=NH+k, j=n0+k;
+    w_=RQ.w.c+RQ.w.rho*w_;
+    const wk=w_+RQ.wd*(hTot[t]-(t-4>=0?hTot[t-4]:0));
+    const m_=RQ.mip.c+RQ.mip.b*(Math.log(eff(j))-Math.log(eff(j-4)))*100+(-1.5)*Math.pow(0.8,k+1);
+    const old=(1-RQ.wm)*(cpi[t]+wk)+RQ.wm*m_;
+    const s_=qYear(k)===2030?share[qNum(k)-1]:0;
+    rpi[t]=(1-s_)*old+s_*(cpi[t]+RQ.cpih_gap); mip[t]=m_; wedge[t]=wk; rOld[t]=old;
+  }
+  return {gap,cpi,u,I,g,oilDevA,heDevA,rpi,mip,wedge,rOld,fxE,hE,hTot,invE,tpE,fxTot,crE,crTot,sE,eE,wE,core,lp,qeTP,bkE,bkRaw,ddA,pay,food,serv,fLv,inL,mortA,ev2,lo,lhe,rent};
+}
+// quarterly -> annual (2026..2030)
+function annual(r){
+  const out={gdp:[],cpi:[],unemp:[],rate:[],gap:[],oil:[],he:[],rpi:[],mip:[],wedge:[],rOld:[],pay:[],food:[],serv:[],mort:[],heY:[],fuelY:[],rentY:[]};
+  const lv=[];let x=100;for(let t=0;t<r.g.length;t++){x*=1+r.g[t]/100;lv.push(x);}
+  const yearOf=t=>t<NH?+ST.q[t].slice(0,4):qYear(t-NH);
+  const mean=(arr,y)=>{let s=0,n=0;for(let t=0;t<arr.length;t++)if(yearOf(t)===y&&isFinite(arr[t])){s+=arr[t];n++;}return n?s/n:0;};
+  const yoy=arr=>arr.map((v,t)=>t>=4?v-arr[t-4]:0);
+  const heY=yoy(r.lhe), fuelY=yoy(r.lo), rentY=yoy(r.rent);
+  YEARS.forEach(y=>{
+    const prev=y-1, lvPrev=mean(lv,prev);
+    out.gdp.push((mean(lv,y)/lvPrev-1)*100);
+    out.cpi.push(mean(r.cpi,y)); out.rpi.push(mean(r.rpi,y)); out.mip.push(mean(r.mip,y)); out.wedge.push(mean(r.wedge,y)); out.rOld.push(mean(r.rOld,y)); out.unemp.push(mean(r.u,y)); out.gap.push(mean(r.gap,y));
+    out.pay.push(mean(r.pay,y)); out.food.push(mean(r.food,y)); out.serv.push(mean(r.serv,y)); out.mort.push(mean(r.mortA,y));
+    out.heY.push(mean(heY,y)); out.fuelY.push(mean(fuelY,y)); out.rentY.push(mean(rentY,y));
+    let tq=r.I.length-1;for(let t=0;t<r.I.length;t++)if(yearOf(t)===y)tq=t;out.rate.push(r.I[tq]);
+    const ks=[];for(let k=0;k<NQ;k++)if(qYear(k)===y)ks.push(k);
+    out.oil.push(ks.reduce((a,k)=>a+r.oilDevA[k],0)/ks.length); out.he.push(ks.reduce((a,k)=>a+r.heDevA[k],0)/ks.length);
+  });
+  return out;
+}
+let BASEQ=null,BASEA=null;
+function baseRun(){BASEQ=runQ(Object.assign({},DEFAULTS));BASEA=annual(BASEQ);BASE.rpi=BASE.cpi.map((v,t)=>v+BASEA.rpi[t]-BASEA.cpi[t]);BASE.food=BASEA.food.slice();BASE.serv=BASEA.serv.slice();BASE.pay=BASE.wages.slice();}
+// Scenario = central path + (scenario engine - baseline engine); fiscal block annual.
+// Passes repeat so that the gilt premium responds to debt and markets see the scenario's own future rate path.
+function run(p){
+  if(!BASEQ)baseRun();
+  let tpY=[0,0,0,0,0], rq=null, a, out, prevI=null;
+  const n=p.links?5:1;
+  for(let it=0;it<n;it++){
+    rq=runQ(p,BASEQ,tpY,prevI); a=annual(rq);
+    out=fiscal(p,a,rq,tpY);
+    tpY=out.debtDev.map(v=>LK.tp_debt*v); prevI=rq.I;
+  }
+  return out;
+}
+const NGDP=[3210,3330,3450,3570,3700];      // nominal GDP by fiscal year, £bn (derived from OBR March 2026)
+const HROOM={obr:{stab:23.6,inv:27.1},sep:{stab:10,inv:13.5}}; // 2029-30 headroom, £bn: OBR March 2026; September independent estimates (RF, KPMG, RSM, Bloomberg: about £8bn to £15bn)
+function fiscal(p,a,rq,tpY){
+  const dv=k=>a[k].map((v,t)=>v-BASEA[k][t]);
+  const g=dv("gdp"),pi=dv("cpi"),u=dv("unemp"),i=dv("rate"),y=dv("gap"),rp=dv("rpi"),wd=dv("pay"),fd=dv("food"),sd=dv("serv");
+  const Wy=[0.25,1,1,1,1];
+  const q=YEARS.map((_,t)=>t===0?0:p.prod+(t>=2?LK.pubcap*p.pubinv:0)), L=YEARS.map((_,t)=>t===0?0:0.0014*(p.migr+0.3*p.stu));
+  const bankY=YEARS.map(yv=>{let s_=0,n=0;for(let k=0;k<NQ;k++)if(qYear(k)===yv){s_+=rq.bkRaw[NH+k];n++;}return s_/n;});
+  const qeY=YEARS.map(yv=>{let s_=0,n=0;for(let k=0;k<NQ;k++)if(qYear(k)===yv){s_+=rq.qeTP[NH+k];n++;}return s_/n;});
+  const yearAvg=arr=>YEARS.map(yv=>{let s_=0,n=0;for(let k=0;k<NQ;k++)if(qYear(k)===yv){s_+=arr[NH+k];n++;}return s_/n;});
+  const lk={fx:yearAvg(rq.fxE),house:yearAvg(rq.hE),inv:yearAvg(rq.invE),tp:yearAvg(rq.tpE).map(v=>v*100),credit:yearAvg(rq.crE),sav:yearAvg(rq.sE),exp:yearAvg(rq.eE),world:yearAvg(rq.wE),qe:yearAvg(rq.qeTP).map(v=>v*100),bank:yearAvg(rq.bkRaw),dd:yearAvg(rq.ddA),crTot:yearAvg(rq.crTot),fxTot:yearAvg(rq.fxTot),hTot:yearAvg(rq.hTot),mort:yearAvg(rq.mortA),ev2:yearAvg(rq.ev2)};
+  const SR=[0.21,0.17,0.14,0.12,0.11];   // debt interest per 1pp on short rates, % of GDP (falls as QT shrinks reserves; OBR ready reckoner)
+  const iPath=j=>j<5?i[j]:i[4]*Math.pow(0.7,j-4);
+  const gilt=[],def=[],cur=[],debt=[],wage=[],ca=[],expV=[],impV=[];let cumG=0,cumQ=0,cumL=0,cumW=0,cumP=0,lvl=0;
+  for(let t=0;t<5;t++){
+    const G=p.spend*Wy[t],T=p.tax*Wy[t]+(t>=1?0.25*p.vat:0),PIv=p.pubinv*Wy[t],S=(t===1||t===2)?p.support:0;
+    // 10-year gilt: average expected Bank Rate over the next ten years (scenario path to 2030, then fading 30% a year) plus term premia
+    let e10=0;for(let j=t;j<t+10;j++)e10+=iPath(j);e10/=10;
+    gilt[t]=e10+(p.tp/100+0.4*p.grates)*Wy[t]+(p.links?tpY[t]:0)+qeY[t];
+    cumG+=gilt[t];cumQ+=q[t];cumL+=L[t];cumW+=wd[t];cumP+=pi[t];
+    const interest=SR[t]*i[t]+0.06*cumG+0.25*rp[t]+0.042*(t?debt[t-1]:0);   // 25% of gilts are RPI-linked: about 0.25% of GDP per 1pp of RPI (OBR); extra debt pays about 4.2%
+    const inactGain=t>=1?0.045*(-p.inact)/100*(t===1?0.4:1):0;   // about £15,000 a year per person back in work (OBR 2023)
+    def[t]=G-T+PIv+S+p.biztax*Wy[t]+0.1*p.guar*Wy[t]+(t>=1?0.05*Math.max(0,-p.migr)/100:0)-0.5*y[t]+interest-0.5*cumQ-LK.fisc_L*cumL+(p.rescue?LK.rescue_cost*bankY[t]:0)
+      -0.033*cumW                       // frozen tax thresholds: receipts rise faster than pay (elasticity about 1.2)
+      -(t<=2?0.08:0.03)*cumP             // departmental budgets fixed in cash to 2028-29 (half of the real squeeze assumed to stick)
+      -0.11*pi[t]                        // benefits uprated with last September's CPI, so they lag a year behind prices
+      -inactGain;
+    cur[t]=def[t]-PIv;                   // current budget excludes net investment
+    const ng=g[t]+0.8*pi[t];
+    debt[t]=(t?debt[t-1]:0)+def[t]-(BASE.debt[t]/100)*ng;
+    wage[t]=wd[t]-0.3*L[t];
+    // trade: exports follow world demand, tariffs and sterling; imports follow UK output and sterling; energy is a net import
+    lvl=(1+lvl/100)*(1+g[t]/100)*100-100;
+    expV[t]=Wy[t]*(p.global-0.1*p.tariff)+lk.world[t]-0.13*lk.fxTot[t]+cumQ+(t>=1?0.25*p.stu/100/0.3*Math.min(1,(t)/2):0);
+    impV[t]=1.2*lvl+0.2*lk.fxTot[t];
+    ca[t]=0.30*expV[t]-0.31*impV[t]-0.01*a.oil[t];
+  }
+  const H0=HROOM[p.hroom]||HROOM.obr;
+  const stab=H0.stab-cur[3]*NGDP[3]/100, inv=H0.inv-(debt[3]-debt[2])*NGDP[3]/100;
+  const lv=(k,d)=>BASE[k].map((v,t)=>v+d[t]);
+  return {rpi:lv("rpi",rp),annualQ:a,links:lk,debtDev:debt,gdp:lv("gdp",g),cpi:lv("cpi",pi),unemp:lv("unemp",u),rate:lv("rate",i),gilt:lv("gilt",gilt),
+    deficit:lv("deficit",def),debt:lv("debt",debt),wages:lv("wages",wage),pay:lv("wages",wage),food:lv("food",fd),serv:lv("serv",sd),ca:lv("ca",ca),curbal:BASE.curbal.map((v,t)=>v-cur[t]),
+    exports:expV,imports:impV,headroom:{stab,inv,base:H0},
+    dev:{g,pi,i,u,y,o:a.oil,def,cur,gilt,q,fx:lk.fxTot,L,fd,wd,sd,mort:lk.mort,he:a.heY.map((v,t)=>v-BASEA.heY[t]),fuel:a.fuelY.map((v,t)=>v-BASEA.fuelY[t]),rent:a.rentY.map((v,t)=>v-BASEA.rentY[t]),mip:a.mip.map((v,t)=>v-BASEA.mip[t])}};
+}
+// ---------- Long run to 2040: supply side and debt ----------
+const LR_YEARS=Array.from({length:15},(_,j)=>2026+j);
+function longRun(s,p){
+  // Baseline potential growth after 2030: productivity 1.2% a year (midway between the OBR's 1.0% medium term and 1.4% long run),
+  // hours 0.2% a year less 0.15pp for ageing (ONS 2024-based projections: population +0.2% a year).
+  const baseG=LR_YEARS.map(y=>y<=2030?BASE.gdp[y-2026]:1.2+0.2-0.15);
+  const popG=0.2;
+  const d=s.dev, lvl=[], pop=[], debtB=[], debtS=[];
+  let L_=0,gapDev=0,capPub=0,capPriv=0,prodLvl=0,popDev=0,inact=0;
+  // level deviation to 2030 from the quarterly model
+  let lv=0;const lv30=[];for(let t=0;t<5;t++){lv=(1+lv/100)*(1+d.g[t]/100)*100-100;lv30.push(lv);}
+  // supply-side pieces in 2030 (the rest of the 2030 gap is demand, which fades)
+  const flow=0.0014*(p.migr+0.3*p.stu), popFlow=(p.migr+p.stu)/693;   // % of population a year
+  const supply30=4*p.prod+4*flow-LK.inact_gdp*p.inact/100+3*LK.pubcap*p.pubinv+0.35*p.biztax;
+  const dem30=lv30[4]-supply30;
+  let debtDev=s.debt[4]-BASE.debt[4], dB=BASE.debt[4];
+  const primB=BASE.deficit[4]-3.7;   // 2030 primary balance: borrowing less debt interest of about 3.7% of GDP (OBR March 2026)
+  const structDef=(s.deficit[4]-BASE.deficit[4])+0.5*(d.y[4]||0)-0.038*debtDev;   // scenario's lasting primary borrowing change (cycle and interest removed)
+  for(let j=0;j<LR_YEARS.length;j++){
+    const y=LR_YEARS[j];
+    if(y<=2030){lvl.push(lv30[y-2026]);pop.push(y===2026?0:popFlow*(y-2026));debtB.push(BASE.debt[y-2026]);debtS.push(s.debt[y-2026]);continue;}
+    const n=y-2030;
+    const supply=supply30+n*(p.prod+flow)+LK.pubcap*p.pubinv*(1-Math.pow(0.97,n))/0.03+0.55*p.biztax*(1-Math.pow(0.9,n))-0.08*Math.max(0,debtDev);
+    const dem=dem30*Math.pow(0.6,n);
+    lvl.push(supply+dem);
+    pop.push(popFlow*(y-2026));
+    // baseline debt: unchanged policy plus ageing (health, pensions, care add about 0.2% of GDP a year, from OBR 2026 long-run projections), effective interest 3.8%, nominal growth = real + 2%
+    const gN=baseG[j]+2.0, r=3.8;
+    dB=dB*(1+r/100)/(1+gN/100)+primB+0.2*n;
+    debtB.push(dB);
+    const lvlChg=lvl[j]-lvl[j-1];
+    // scenario: lasting borrowing change, interest on the extra debt, a stronger economy lowering the debt ratio, and continuing migration flows
+    const nonPop=(supply-supply30)-n*flow;   // supply gained other than from more people
+    debtDev=debtDev*(1+r/100)/(1+gN/100)+structDef-0.1*nonPop-(dB+debtDev)*lvlChg/(100+lvl[j]);
+    debtS.push(dB+debtDev);
+  }
+  const perHead=lvl.map((v,j)=>((1+v/100)/(1+pop[j]/100)-1)*100);
+  return {years:LR_YEARS,lvl,perHead,debtB,debtS,baseG};
+}
+// ---------- Uncertainty around a scenario: repeated draws of the uncertain parameters ----------
+function rng(seed){let s_=seed>>>0;return ()=>{s_=(s_*1664525+1013904223)>>>0;return s_/4294967296;};}
+function gauss(r){let u1=r(),u2=r();return Math.sqrt(-2*Math.log(u1+1e-12))*Math.cos(2*Math.PI*u2);}
+const SHOCKK=["oil","bills","global","tariff","fx","grates","tp","credit","house","sav","inv","prod","migr","stu","wshock","expect","food","inact"];   // policy levers are choices, so they are not varied
+function uncertainty(p,N){
+  N=N||120;const r=rng(20260924),keep={RG:C.RG,qo0:C.pc.qo0,qhe0:C.pc.qhe0,hi:WG.hi,fx_i:LK.fx_i,tp_debt:LK.tp_debt,h_mort:LK.h_mort,FX_PT,DSCALE,BQ:BASEQ,BA:BASEA,brpi:BASE.rpi,bfood:BASE.food,bserv:BASE.serv};
+  const keys=["gdp","cpi","rate","unemp","deficit","debt"],draws={};keys.forEach(k=>draws[k]=[]);
+  const lvlD=[];
+  for(let n=0;n<N;n++){
+    C.RG=keep.RG*Math.exp(0.35*gauss(r)); C.pc.qo0=keep.qo0+0.0022*gauss(r); C.pc.qhe0=keep.qhe0+0.006*gauss(r);
+    WG.hi=Math.max(0,keep.hi+0.04*gauss(r)); LK.fx_i=keep.fx_i+0.54*gauss(r); LK.tp_debt=Math.max(0,keep.tp_debt+0.026*gauss(r)); LK.h_mort=keep.h_mort+0.09*gauss(r);
+    FX_PT=-Math.max(0.005,0.02+0.007*gauss(r)); DSCALE=Math.exp(0.25*gauss(r));
+    const sc=Math.exp(0.3*gauss(r)), q=Object.assign({},p); SHOCKK.forEach(k=>{if(typeof q[k]==="number")q[k]=q[k]*sc;});
+    BASEQ=null; baseRun(); const b=run(Object.assign({},DEFAULTS)), s=run(q);
+    keys.forEach(k=>draws[k].push(s[k].map((v,t)=>v-b[k][t])));
+  }
+  C.RG=keep.RG;C.pc.qo0=keep.qo0;C.pc.qhe0=keep.qhe0;WG.hi=keep.hi;LK.fx_i=keep.fx_i;LK.tp_debt=keep.tp_debt;LK.h_mort=keep.h_mort;FX_PT=keep.FX_PT;DSCALE=keep.DSCALE;
+  BASEQ=keep.BQ;BASEA=keep.BA;BASE.rpi=keep.brpi;BASE.food=keep.bfood;BASE.serv=keep.bserv;
+  const pct=(arr,q)=>{const s_=arr.slice().sort((x,y)=>x-y);return s_[Math.min(s_.length-1,Math.floor(q*s_.length))];};
+  const out={};keys.forEach(k=>{out[k]={lo:YEARS.map((_,t)=>pct(draws[k].map(d=>d[t]),0.1)),hi:YEARS.map((_,t)=>pct(draws[k].map(d=>d[t]),0.9))};});
+  return out;
+}
+const VARS=[
+  {k:"gdp",label:"Real GDP growth",unit:"%",band:true},
+  {k:"cpi",label:"CPI inflation",unit:"%",band:true},
+  {k:"rpi",label:"RPI inflation",unit:"%",band:true},
+  {k:"rate",label:"Bank Rate, Q4 average",unit:"%",band:true},
+  {k:"unemp",label:"Unemployment rate",unit:"%",band:true},
+  {k:"deficit",label:"Borrowing, % of GDP",unit:"%"},
+  {k:"debt",label:"Net debt, % of GDP",unit:"%"},
+  {k:"pay",label:"Pay growth",unit:"%"},
+  {k:"food",label:"Food inflation",unit:"%"}
+];
+const UNCK=["gdp","cpi","rate","unemp","deficit","debt"];
+let UNC=null;
+function alpha(hex,a){hex=hex.replace("#","");if(hex.length===3)hex=hex.split("").map(c=>c+c).join("");const n=parseInt(hex,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+function bandLim(k,center,lo,hi){
+  const B=M.bands[k==="rpi"?"cpi":k], fl=k==="rate"?0.1:(k==="unemp"?2:-99);
+  return [center.map((v,t)=>Math.max(fl,v-B[hi][t])),center.map((v,t)=>v-B[lo][t])];
+}
+function bandSets(k,center){
+  const acc=css("--accent");
+  const [l90,h90]=bandLim(k,center,"p05","p95"), [l50,h50]=bandLim(k,center,"p25","p75");
+  const b=(label,data,fill,a)=>({label,data,borderWidth:0,pointRadius:0,pointHoverRadius:0,fill,backgroundColor:alpha(acc,a),tension:0.25,band:true});
+  return [b("90% low",l90,false,0),b("90% range",h90,"-1",0.10),b("50% low",l50,false,0),b("50% range",h50,"-1",0.16)];
+}
+function bandOpts(unit){
+  const o=baseOpts(unit);
+  o.plugins.tooltip.filter=i=>!i.dataset.band||i.dataset.label.endsWith("range");
+  o.plugins.tooltip.callbacks.label=c=>{
+    if(c.dataset.band){const lowIdx=c.datasetIndex-1;const lo=c.chart.data.datasets[lowIdx].data[c.dataIndex];return `${c.dataset.label}: ${lo.toFixed(1)} to ${c.parsed.y.toFixed(1)}${unit}`;}
+    return `${c.dataset.label}: ${c.parsed.y.toFixed(1)}${unit}`;};
+  return o;
+}
+// OUTLOOK
+const up=()=>run(Object.assign({},DEFAULTS,PRESET_MAP["Strait reopens"].set));
+const dn=()=>run(Object.assign({},DEFAULTS,PRESET_MAP["Prolonged disruption"].set));
+function buildOutlook(){
+  const host=document.getElementById("outlookCharts");host.innerHTML="";
+  const U=up(),D=dn();
+  VARS.forEach(v=>{
+    const c=panel(host,"o-"+v.k,v.label);
+    if(charts["o-"+v.k])charts["o-"+v.k].destroy();
+    const sets=(v.band?bandSets(v.k,BASE[v.k]):[]).concat([ds("Central",BASE[v.k],css("--accent"),[],2.5),ds("Upside",U[v.k],css("--good"),[5,4],1.5),ds("Downside",D[v.k],css("--bad"),[5,4],1.5)]);
+    charts["o-"+v.k]=new Chart(c,{type:"line",data:{labels:YEARS,datasets:sets},options:bandOpts(v.unit)});
+  });
+  const f=x=>x.toFixed(1), f2=x=>x.toFixed(2);
+  const rows=[["gdp","Real GDP growth",f],["cpi","CPI inflation",f],["unemp","Unemployment",f],["rate","Bank Rate, Q4 average",f2]];
+  let html=`<thead><tr><th></th><th>Source</th>${YEARS.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>`;
+  rows.forEach(([k,l,fm])=>{
+    const src=[["Estimated model",M.model_annual[k]],["Model plus no-change blend",M.stat[k]],[k==="rate"?"Market pricing anchor":"Official and consensus anchor",M.ext[k]],["<b>Central</b>",BASE[k]]];
+    src.forEach(([n,arr],j)=>{html+=`<tr${j===3?' style="font-weight:600"':''}><td>${j===0?l:""}</td><td style="text-align:left">${n}</td>${arr.map(v=>`<td class="num">${fm(v)}</td>`).join("")}</tr>`;});
+    const [l9,h9]=bandLim(k,BASE[k],"p05","p95");
+    html+=`<tr><td></td><td style="text-align:left;color:var(--muted)">90% range</td>${BASE[k].map((v,t)=>`<td class="num" style="color:var(--muted)">${fm(l9[t])} to ${fm(h9[t])}</td>`).join("")}</tr>`;
+  });
+  html+=`<tr><td>RPI inflation</td><td style="text-align:left"><b>Central</b> (CPI central plus modelled RPI wedge)</td>${BASE.rpi.map(v=>`<td class="num" style="font-weight:600">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Bank Rate, market path</td><td style="text-align:left">Money markets, 21 Sep (2028 on extrapolated)</td>${BASE.mkt.map(v=>`<td class="num">${f2(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Pay growth</td><td style="text-align:left">Official anchor (whole-economy average earnings)</td>${BASE.pay.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Food inflation</td><td style="text-align:left">Estimated food equation</td>${BASE.food.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Services inflation</td><td style="text-align:left">Estimated services equation</td>${BASE.serv.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>10-year gilt</td><td style="text-align:left">Market level, easing with the rate path</td>${BASE.gilt.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Current account, % GDP</td><td style="text-align:left">Held near its 2025 level (assumption)</td>${BASE.ca.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Current budget balance, % GDP (FY)</td><td style="text-align:left">OBR March 2026</td>${BASE.curbal.map(v=>`<td class="num">${f2(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Borrowing, % GDP (FY)</td><td style="text-align:left">Anchor</td>${BASE.deficit.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  html+=`<tr><td>Net debt, % GDP (FY)</td><td style="text-align:left">Anchor</td>${BASE.debt.map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;
+  document.getElementById("baseTable").innerHTML=html+"</tbody>";
+  rpiBasket("rpiBaseTable",null);
+}
+function buildScenCharts(){
+  const host=document.getElementById("scenCharts");host.innerHTML="";
+  VARS.forEach(v=>{const c=panel(host,"s-"+v.k,v.label);if(charts["s-"+v.k])charts["s-"+v.k].destroy();
+    const ub=(label,fill,a)=>({label,data:BASE[v.k].slice(),borderWidth:0,pointRadius:0,pointHoverRadius:0,fill,backgroundColor:alpha(css("--scen"),a),tension:0.25,band:true});
+    const sets=(v.band?bandSets(v.k,BASE[v.k]).slice(0,2):[]).concat([ds("Central",BASE[v.k],css("--accent"),[],2),ub("Scenario low",false,0),ub("Scenario range",'-1',0.18),ds("Scenario",BASE[v.k].slice(),css("--scen"),[],2.5)]);
+    charts["s-"+v.k]=new Chart(c,{type:"line",data:{labels:YEARS,datasets:sets},options:bandOpts(v.unit)});});
+}
+function update(){
+  const s=run(state);
+  const U=(UNC&&UNC.key===JSON.stringify(state))?UNC.res:null;
+  VARS.forEach(v=>{const c=charts["s-"+v.k],n=c.data.datasets.length;c.data.datasets[n-1].data=s[v.k];
+    const has=U&&U[v.k];c.data.datasets[n-3].data=has?BASE[v.k].map((b,t)=>b+U[v.k].lo[t]):s[v.k];c.data.datasets[n-2].data=has?BASE[v.k].map((b,t)=>b+U[v.k].hi[t]):s[v.k];c.update();});
+  const ut=document.getElementById("uncTable");
+  if(U){const nm={gdp:"GDP growth",cpi:"CPI inflation",rate:"Bank Rate",unemp:"Unemployment",deficit:"Borrowing, % GDP",debt:"Net debt, % GDP"};
+    ut.innerHTML=`<thead><tr><th>10% to 90% range</th><th class="num">2027</th><th class="num">2028</th><th class="num">2030</th></tr></thead><tbody>`+UNCK.map(k=>`<tr><td>${nm[k]}</td>${[1,2,4].map(t=>`<td class="num">${f1(BASE[k][t]+U[k].lo[t])} to ${f1(BASE[k][t]+U[k].hi[t])}</td>`).join("")}</tr>`).join("")+"</tbody>";}
+  else {ut.innerHTML="";clearTimeout(window.__uncT);const key=JSON.stringify(state);window.__uncT=setTimeout(()=>{if(JSON.stringify(state)===key){UNC={key,res:uncertainty(state,120)};update();}},700);}
+  const rows=[["GDP growth, pp","gdp",true],["GDP level, %","level",true],["CPI inflation, pp","cpi",false],["RPI inflation, pp","rpi",false],["Food inflation, pp","food",false],["Services inflation, pp","serv",false],["Pay growth, pp","pay",null],["Bank Rate, pp","rate",false],["10-year gilt, pp","gilt",false],["Unemployment, pp","unemp",false],["Borrowing, % GDP","deficit",false],["Current budget balance, % GDP","curbal",true],["Net debt, % GDP","debt",false],["Exports, % (volume)","exports",true],["Imports, % (volume)","imports",null],["Current account, % GDP","ca",true]];
+  let lvl=0;const level=s.gdp.map((v,t)=>{lvl=(1+lvl/100)*(1+(v-BASE.gdp[t])/100)*100-100;return lvl;});
+  document.getElementById("deltaTable").innerHTML=`<thead><tr><th></th>${YEARS.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>`+
+    rows.map(r=>{const vals=r[1]==="level"?level:(r[1]==="exports"||r[1]==="imports")?s[r[1]]:s[r[1]].map((v,t)=>v-BASE[r[1]][t]);
+      return `<tr><td>${r[0]}</td>${vals.map(d=>{const bad=r[2]===null?false:r[2]?d<-0.049:d>0.049,good=r[2]===null?false:r[2]?d>0.049:d<-0.049;return `<td class="num ${bad?"up":good?"dn":""}">${sg(d)}</td>`}).join("")}</tr>`}).join("")+`</tbody>`;
+  // fiscal rules
+  const hr=s.headroom, rt=(name,v,b)=>`<div class="tile"><span class="k">${name}</span><span class="v">${v<0?"−":""}£${Math.abs(v).toFixed(0)}bn</span><span class="d">Headroom in 2029-30, from a starting £${b.toFixed(1)}bn.</span><span><span class="pill ${v>=5?"good":v>=0?"warn":"bad"}">${v>=5?"Met":v>=0?"Met, thin margin":"Breached"}</span></span></div>`;
+  document.getElementById("ruleTiles").innerHTML=rt("Stability rule",hr.stab,hr.base.stab)+rt("Investment rule",hr.inv,hr.base.inv);
+  // outside-normal-uncertainty flag
+  const flags=[];["gdp","cpi","rate","unemp"].forEach(k=>{const [l9,h9]=bandLim(k,BASE[k],"p05","p95");s[k].forEach((v,t)=>{if(v<l9[t]-0.001||v>h9[t]+0.001)flags.push(`${VARS.find(x=>x.k===k).label} ${YEARS[t]}`);});});
+  document.getElementById("bandNote").textContent=flags.length?`Outside the 90% range of normal forecast errors: ${flags.join(", ")}. Treat as a stress scenario.`:"All four headline paths stay within the 90% range of normal forecast errors.";
+  rpiBasket("rpiScenTable",s);
+  const LKr=[["Sterling, % (rates and gilt risk)",s.links.fx,1],["House prices, % (mortgage rates)",s.links.house,1],["Gilt risk premium, bp (debt)",s.links.tp,0],["Business investment, % (demand)",s.links.inv,1],["Bank lending spreads, bp (downturn and house prices)",s.links.credit,0],["Household saving ratio, pp (job worries)",s.links.sav,2],["Inflation expectations, pp (inflation overshoots)",s.links.exp,2],["World demand for UK exports, % (oil price rises)",s.links.world,1],["QE: fall in gilt yields, bp (when Bank Rate hits its floor)",s.links.qe,0],["Bank stress beyond capital buffers, index",s.links.bank,2],["Debt-deflation drag on demand, % of GDP",s.links.dd,2],["Expected Bank Rate over the next two years, pp (markets see the scenario's rate path)",s.links.ev2,2],["Two-year fixed mortgage rate, pp",s.links.mort,2]];
+  document.getElementById("linkTable").innerHTML=`<thead><tr><th></th>${YEARS.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>`+
+    LKr.map(r=>`<tr><td>${r[0]}</td>${r[1].map(v=>`<td class="num">${(Math.abs(v)<0.05?0:v).toFixed(r[2])}</td>`).join("")}</tr>`).join("")+"</tbody>";
+  updateBiz(s);updateHH(s);updateLR(s);updateCompare(s);
+}
+// HOUSEHOLDS
+const HHG=[
+ {n:"Poorest fifth",spend:407,sh:{food:15.2,en:10,fuel:2.5,rent:13,mort:1}},
+ {n:"Second fifth",spend:520,sh:{food:13.5,en:8.5,fuel:3,rent:10,mort:2.5}},
+ {n:"Middle fifth",spend:640,sh:{food:12,en:7,fuel:3.5,rent:7,mort:4}},
+ {n:"Fourth fifth",spend:800,sh:{food:10.5,en:6,fuel:3.5,rent:5,mort:5.5}},
+ {n:"Richest fifth",spend:1084,sh:{food:8.5,en:5,fuel:3,rent:3,mort:7}},
+ {n:"Private renters",spend:600,sh:{food:11,en:7,fuel:3,rent:30,mort:0},tenure:true},
+ {n:"Mortgagors",spend:800,sh:{food:10,en:5.5,fuel:3.5,rent:0,mort:8},tenure:true},
+ {n:"Outright owners",spend:600,sh:{food:12,en:7,fuel:3,rent:0,mort:0},tenure:true}];
+function hhInfl(s){
+  const d=s.dev;
+  // component price changes versus central, pp: food; household energy; motor fuel (crude is about 45% of the pump price); rents (migration effect plus 60% of extra CPI); mortgage interest payments
+  return YEARS.map((_,t)=>{const food=d.fd[t],en=d.he[t],fuel=0.45*d.fuel[t],rent=d.rent[t]+0.6*d.pi[t],mort=d.mip[t];
+    const other=(d.pi[t]-0.114*food-0.045*en-0.03*fuel-0.084*rent)/(1-0.114-0.045-0.03-0.084);
+    return {food,en,fuel,rent,mort,other};});
+}
+function updateHH(s){
+  document.getElementById("hhScenName").textContent=activePreset==="Custom"?"Custom scenario":activePreset;
+  const C_=hhInfl(s), f2=v=>(Math.abs(v)<0.05?0:v).toFixed(1);
+  const gi=(g,t)=>{const c=C_[t],sh=g.sh,rest=100-sh.food-sh.en-sh.fuel-sh.rent-sh.mort;return (sh.food*c.food+sh.en*c.en+sh.fuel*c.fuel+sh.rent*c.rent+sh.mort*c.mort+rest*c.other)/100;};
+  let h=`<thead><tr><th>Group</th><th class="num">2027, pp</th><th class="num">2028, pp</th><th class="num">2027, £ a week</th></tr></thead><tbody>`;
+  HHG.forEach((g,j)=>{if(j===5)h+=`<tr><td colspan="4" style="font-weight:600;padding-top:12px">By tenure</td></tr>`;
+    const a=gi(g,1),b=gi(g,2),w=a*g.spend/100;h+=`<tr><td>${g.n}</td><td class="num ${a>0.049?"up":a<-0.049?"dn":""}">${sg(a)}</td><td class="num ${b>0.049?"up":b<-0.049?"dn":""}">${sg(b)}</td><td class="num">${(w>=0?"+£":"−£")+Math.abs(w).toFixed(2)}</td></tr>`;});
+  document.getElementById("hhTable").innerHTML=h+"</tbody>";
+  let sh=`<thead><tr><th>% of spending</th><th class="num">Food</th><th class="num">Energy</th><th class="num">Fuel</th><th class="num">Rent</th><th class="num">Mortgage interest</th><th class="num">£ a week</th></tr></thead><tbody>`;
+  HHG.forEach(g=>{sh+=`<tr><td>${g.n}</td>${["food","en","fuel","rent","mort"].map(k=>`<td class="num">${g.sh[k]}</td>`).join("")}<td class="num">${g.spend}</td></tr>`;});
+  document.getElementById("hhShares").innerHTML=sh+"</tbody>";
+  const q1=gi(HHG[0],1),q5=gi(HHG[4],1),real=(s.pay[1]-s.cpi[1])-(BASE.pay[1]-BASE.cpi[1]),mort=s.links.mort[1];
+  const tile=(k,v,dd)=>`<div class="tile"><span class="k">${k}</span><span class="v">${v}</span><span class="d">${dd}</span></div>`;
+  document.getElementById("hhTiles").innerHTML=
+    tile("Poorest minus richest fifth, 2027",sg(q1-q5)+"pp","Positive means the scenario hits low-income households' inflation harder.")+
+    tile("Food inflation, 2027",f2(s.food[1])+"%",`Central ${f2(BASE.food[1])}%.`)+
+    tile("Real pay growth, 2027",sg(s.pay[1]-s.cpi[1])+"%",`${sg(real)}pp versus central.`)+
+    tile("Mortgage cost, 2027",(mort>=0?"+£":"−£")+Math.abs(mort*1000).toFixed(0),"A year per £100,000 borrowed on a new two-year fix, versus central.");
+}
+// LONG RUN
+function buildLR(){
+  const host=document.getElementById("lrCharts");host.innerHTML="";
+  [["lr-lvl","GDP level versus central, %"],["lr-ph","GDP per head versus central, %"],["lr-debt","Net debt, % of GDP"]].forEach(([id,t])=>{panel(host,id,t);if(charts[id])charts[id].destroy();});
+  const Y=LR_YEARS, z=Y.map(()=>0), o=Object.assign(baseOpts(""),{});
+  charts["lr-lvl"]=new Chart(document.getElementById("lr-lvl"),{type:"line",data:{labels:Y,datasets:[ds("Central",z,css("--accent"),[],2),ds("Scenario",z.slice(),css("--scen"),[],2.5)]},options:baseOpts("%")});
+  charts["lr-ph"]=new Chart(document.getElementById("lr-ph"),{type:"line",data:{labels:Y,datasets:[ds("Central",z,css("--accent"),[],2),ds("Scenario",z.slice(),css("--scen"),[],2.5)]},options:baseOpts("%")});
+  charts["lr-debt"]=new Chart(document.getElementById("lr-debt"),{type:"line",data:{labels:Y,datasets:[ds("Central",z,css("--accent"),[],2),ds("Scenario",z.slice(),css("--scen"),[],2.5)]},options:baseOpts("%")});
+  [ "lr-lvl","lr-ph","lr-debt"].forEach(k=>charts[k].data.datasets.forEach(d=>{d.pointRadius=1.5;}));
+}
+function updateLR(s){
+  if(!charts["lr-lvl"])return;
+  document.getElementById("lrScenName").textContent=activePreset==="Custom"?"Custom scenario":activePreset;
+  const L_=longRun(s,state);
+  charts["lr-lvl"].data.datasets[1].data=L_.lvl;charts["lr-lvl"].update();
+  charts["lr-ph"].data.datasets[1].data=L_.perHead;charts["lr-ph"].update();
+  charts["lr-debt"].data.datasets[0].data=L_.debtB;charts["lr-debt"].data.datasets[1].data=L_.debtS;charts["lr-debt"].update();
+  const ix=[2030,2035,2040].map(y=>L_.years.indexOf(y));
+  document.getElementById("lrTable").innerHTML=`<thead><tr><th></th><th class="num">2030</th><th class="num">2035</th><th class="num">2040</th></tr></thead><tbody>`+
+    `<tr><td>GDP level, % vs central</td>${ix.map(j=>`<td class="num">${sg(L_.lvl[j])}</td>`).join("")}</tr>`+
+    `<tr><td>GDP per head, % vs central</td>${ix.map(j=>`<td class="num">${sg(L_.perHead[j])}</td>`).join("")}</tr>`+
+    `<tr><td>Net debt, central, % GDP</td>${ix.map(j=>`<td class="num">${L_.debtB[j].toFixed(1)}</td>`).join("")}</tr>`+
+    `<tr><td>Net debt, scenario, % GDP</td>${ix.map(j=>`<td class="num">${L_.debtS[j].toFixed(1)}</td>`).join("")}</tr>`+
+    `<tr><td>Central GDP growth, %</td>${ix.map(j=>`<td class="num">${L_.baseG[j].toFixed(2)}</td>`).join("")}</tr></tbody>`;
+}
+// RPI BASKET
+function rpiBasket(targetId,sc){
+  const A=sc?sc.annualQ:BASEA, adj=sc?sc.rpi.map((v,t)=>v-A.rpi[t]):BASE.rpi.map((v,t)=>v-BASEA.rpi[t]);
+  const wm=RQ.wm, f=x=>(Math.abs(x)<0.005?0:x).toFixed(2);
+  const rows=[
+    ["Goods and services shared with CPI",`${((1-wm)*1000).toFixed(0)}`,A.cpi.map((v,t)=>(1-wm)*v+adj[t])],
+    ["RPI-only housing and formula effect (depreciation, council tax, Carli averaging)","incl.",A.wedge.map(v=>(1-wm)*v)],
+    ["Mortgage interest payments",`${(wm*1000).toFixed(0)}`,A.mip.map(v=>wm*v)],
+    ["2030 switch to CPIH methods","",A.rpi.map((v,t)=>v-A.rOld[t])]];
+  let h=`<thead><tr><th>Contribution to RPI inflation, pp</th><th class="num">Weight /1000</th>${YEARS.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>`;
+  rows.forEach(r=>{h+=`<tr><td style="white-space:normal;min-width:220px">${r[0]}</td><td class="num">${r[1]}</td>${r[2].map(v=>`<td class="num">${f(v)}</td>`).join("")}</tr>`;});
+  const tot=A.rpi.map((v,t)=>v+adj[t]);
+  h+=`<tr style="font-weight:600"><td>RPI inflation</td><td class="num">1000</td>${tot.map(v=>`<td class="num">${v.toFixed(1)}</td>`).join("")}</tr>`;
+  h+=`<tr><td style="color:var(--muted)">Memo: mortgage interest payments, % y/y</td><td></td>${A.mip.map(v=>`<td class="num" style="color:var(--muted)">${v.toFixed(1)}</td>`).join("")}</tr>`;
+  h+=`<tr><td style="color:var(--muted)">Memo: RPI minus CPI wedge</td><td></td>${tot.map((v,t)=>`<td class="num" style="color:var(--muted)">${(v-(A.cpi[t]+adj[t])).toFixed(1)}</td>`).join("")}</tr>`;
+  document.getElementById(targetId).innerHTML=h+"</tbody>";
+}
+// PARTIES
+const PARTIES=[["Labour (current government plans)","Labour"],["Conservative, as costed by party","Conservative"],["Conservative, savings half delivered","  savings half delivered"],["Reform UK, as costed by party","Reform UK"],["Reform UK, savings half delivered","  savings half delivered"],["Liberal Democrat, as costed by party","Liberal Democrat"],["Liberal Democrat, revenue half delivered","  revenue half delivered"],["Green, as costed by party","Green"],["Green, revenue half delivered","  revenue half delivered"]];
+function buildParties(){
+  const lvl=g=>g.slice(1).reduce((a,x)=>a*(1+x/100),1);
+  const cols=["GDP by 2030","CPI 2027","CPI peak","RPI 2027","Unemployment 2030","Bank Rate peak","Borrowing 2030","Net debt 2030"];
+  let h=`<thead><tr><th>Platform</th>${cols.map(c=>`<th class="num">${c}</th>`).join("")}</tr></thead><tbody>`;
+  const f=(v,d=1)=>v.toFixed(d), sgn=v=>(v>0.049?"+":"")+f(v);
+  PARTIES.forEach(([key,label])=>{
+    const s=run(Object.assign({},DEFAULTS,PRESET_MAP[key].set)), sub=label.startsWith("  ");
+    const cells=[sgn((lvl(s.gdp)/lvl(BASE.gdp)-1)*100)+"%",f(s.cpi[1])+"%",f(Math.max(...s.cpi))+"%",f(s.rpi[1])+"%",f(s.unemp[4])+"%",f(Math.max(...s.rate),2)+"%",f(s.deficit[4])+"%",f(s.debt[4])+"%"];
+    h+=`<tr${sub?' style="color:var(--muted)"':''}><td style="${sub?'padding-left:22px':'font-weight:600'}">${label.trim()}</td>${cells.map(c=>`<td class="num">${c}</td>`).join("")}</tr>`;
+  });
+  document.getElementById("partyTable").innerHTML=h+"</tbody>";
+}
+// ACCURACY
+function buildAcc(){
+  const R=M.RM, hs=[1,4,8,12];
+  const row=(l,a)=>`<tr><td>${l}</td>${hs.map(h=>`<td class="num">${a[h-1].toFixed(2)}</td>`).join("")}</tr>`;
+  let h=`<thead><tr><th>RMSE, pp, by quarters ahead</th>${hs.map(x=>`<th class="num">${x}q</th>`).join("")}</tr></thead><tbody>`;
+  h+=`<tr><td colspan="5" style="font-weight:600;padding-top:12px">CPI inflation</td></tr>`+row("Estimated model",R.cpi_model)+row("No-change benchmark",R.cpi_naive)+row("Blend used (75% model)",R.cpi);
+  h+=`<tr><td colspan="5" style="font-weight:600;padding-top:12px">GDP growth, year on year</td></tr>`+row("Blend used (50% model)",R.gyy)+row("No-change benchmark",R.gyy_naive);
+  h+=`<tr><td colspan="5" style="font-weight:600;padding-top:12px">Bank Rate</td></tr>`+row("Estimated model",R.i_model)+row("No-change benchmark",R.i_naive)+row("Blend used (50% model)",R.i);
+  h+=`<tr><td colspan="5" style="font-weight:600;padding-top:12px">Unemployment</td></tr>`+row("Estimated model",R.u_model)+row("No-change benchmark (used)",R.u);
+  document.getElementById("rmseTable").innerHTML=h+"</tbody>";
+  const B=M.bt, host=document.getElementById("btCharts");host.innerHTML="";
+  const c1=panel(host,"bt-cpi","CPI inflation, 2022 to 2024");
+  if(charts["bt-cpi"])charts["bt-cpi"].destroy();
+  charts["bt-cpi"]=new Chart(c1,{type:"line",data:{labels:B.q,datasets:[ds("Actual",B.cpi_act,css("--ink"),[],2.5),ds("Model, told actual energy prices",B.cpi_mod,css("--scen"),[],2),ds("Model, energy held flat",B.cpi_flat,css("--band"),[4,4],1.5)]},options:Object.assign(baseOpts("%"),{plugins:Object.assign(baseOpts("%").plugins,{legend:{display:true,position:"bottom",labels:{color:css("--muted"),boxWidth:14,font:{size:11}}}})})});
+  const c2=panel(host,"bt-i","Bank Rate, 2022 to 2024");
+  if(charts["bt-i"])charts["bt-i"].destroy();
+  charts["bt-i"]=new Chart(c2,{type:"line",data:{labels:B.q,datasets:[ds("Actual",B.i_act,css("--ink"),[],2.5),ds("Model",B.i_mod,css("--scen"),[],2)]},options:Object.assign(baseOpts("%"),{plugins:Object.assign(baseOpts("%").plugins,{legend:{display:true,position:"bottom",labels:{color:css("--muted"),boxWidth:14,font:{size:11}}}})})});
+  const names={pc:"Inflation (q/q, seasonally adjusted)",is:"Output gap",tr:"Bank Rate rule",ok:"Unemployment change"};
+  const lab={dp1:"inflation, 1 qtr ago",dp2:"inflation, 2 qtrs ago",ug1:"unemployment gap",qo0:"oil price change",qo1:"oil, lag 1",qo2:"oil, lag 2",qo3:"oil, lag 3",qhe0:"household energy bills change",qhe1:"bills, lag 1",qfx1:"sterling, lag 1",qfx2:"sterling, lag 2",qfx3:"sterling, lag 3",qfx4:"sterling, lag 4",gap1:"gap, 1 qtr ago",gap2:"gap, 2 qtrs ago",i1:"Bank Rate, 1 qtr ago",pi:"CPI inflation",gap:"output gap",rstar:"neutral real rate",const:"constant",du1:"change, 1 qtr ago",gg:"growth vs potential",gg1:"growth vs potential, lag 1"};
+  let ct=`<thead><tr><th>Equation / term</th><th class="num">Coefficient</th><th class="num">t-stat</th></tr></thead><tbody>`;
+  ["pc","is","tr","ok"].forEach(eq=>{
+    ct+=`<tr><td colspan="3" style="font-weight:600;padding-top:12px">${names[eq]} <span class="note">R² ${M.r2[eq]}, n = ${M.nobs[eq]}</span></td></tr>`;
+    Object.entries(M.coef[eq]).forEach(([k,v])=>{const t=M.t[eq][k];ct+=`<tr><td>${lab[k]||k}</td><td class="num">${v.toFixed(4)}</td><td class="num" style="${Math.abs(t)<2?"color:var(--muted)":""}">${t.toFixed(1)}</td></tr>`;});
+  });
+  document.getElementById("coefTable").innerHTML=ct+"</tbody>";
+  const n2={wage:"Pay growth (y/y)",food:"Food inflation (y/y)",serv:"Services inflation (y/y)"};
+  const l2={const:"constant",w1:"pay growth, 1 qtr ago",hi:"CPI inflation above 4%, 1 qtr ago",ug1:"unemployment gap",dinact:"change in inactivity rate",f1:"food inflation, 1 qtr ago",doil2:"oil, y/y, 2 qtrs ago",dhe1:"household energy, y/y, 1 qtr ago",dfx2:"sterling ($), y/y, 2 qtrs ago",s1:"services inflation, 1 qtr ago",cpi1:"CPI inflation, 1 qtr ago"};
+  let ct2=`<thead><tr><th>Equation / term</th><th class="num">Coefficient</th><th class="num">t-stat</th></tr></thead><tbody>`;
+  ["wage","food","serv"].forEach(eq=>{const Q=E2[eq];ct2+=`<tr><td colspan="3" style="font-weight:600;padding-top:12px">${n2[eq]} <span class="note">R² ${Q.r2}, n = ${Q.n}</span></td></tr>`;
+    Object.entries(Q.coef).forEach(([k,v])=>{const t=Q.t[k];ct2+=`<tr><td>${l2[k]||k}</td><td class="num">${v.toFixed(4)}</td><td class="num" style="${Math.abs(t)<2?"color:var(--muted)":""}">${t.toFixed(1)}</td></tr>`;});});
+  ct2+=`<tr><td colspan="3" style="font-weight:600;padding-top:12px">Inflation equation with pay added <span class="note">2001 to 2026</span></td></tr><tr><td>pay growth, 1 qtr ago</td><td class="num">${E2.pcw.coef.wg1.toFixed(4)}</td><td class="num" style="color:var(--muted)">${E2.pcw.t.wg1.toFixed(1)}</td></tr>`;
+  document.getElementById("coef2Table").innerHTML=ct2+"</tbody>";
+}
+let state=Object.assign({},DEFAULTS), activePreset="Baseline";
+const fmtSpread=v=>(+v).toFixed(2)+"pp";
+function buildLevers(){
+  const host=document.getElementById("levers");
+  LEVERS.forEach((grp,gi)=>{
+    const d=document.createElement("details");d.className="lg";d.open=!!grp.open;d.id="lg-"+gi;
+    let html=`<summary>${grp.g}<span class="cnt" id="cnt-${gi}"></span></summary><div class="body">`;
+    grp.items.forEach(x=>{
+      if(x.type==="select")html+=`<div class="ctl" data-k="${x.k}"><label for="${x.k}">${x.l}</label><select id="${x.k}">${x.opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("")}</select></div>`;
+      else if(x.type==="check")html+=`<label class="toggle ctl" data-k="${x.k}"><input type="checkbox" id="${x.k}"> ${x.l}</label>`;
+      else html+=`<div class="ctl" data-k="${x.k}"><label for="${x.k}">${x.l} <output id="${x.k}-o"></output></label><input type="range" id="${x.k}" min="${x.min}" max="${x.max}" step="${x.step}"><small>${x.h}</small></div>`;
+    });
+    d.innerHTML=html+"</div>";host.appendChild(d);
+    grp.items.forEach(x=>{
+      const el=document.getElementById(x.k);
+      el.addEventListener(x.type?"change":"input",e=>{state[x.k]=x.type==="check"?e.target.checked:x.type==="select"?e.target.value:+e.target.value;activePreset="Custom";syncControls();update();});
+    });
+  });
+}
+function syncControls(){
+  LEVERS.forEach((grp,gi)=>{
+    let changed=0;
+    grp.items.forEach(x=>{
+      const el=document.getElementById(x.k);
+      if(x.type==="check")el.checked=state[x.k];else el.value=state[x.k];
+      if(!x.type)document.getElementById(x.k+"-o").textContent=x.f(state[x.k]);
+      const ch=state[x.k]!==x.d;if(ch)changed++;
+      el.closest(".ctl").classList.toggle("changed",ch);
+    });
+    document.getElementById("cnt-"+gi).textContent=changed?changed+" changed":"";
+    if(changed)document.getElementById("lg-"+gi).open=true;
+  });
+  document.querySelectorAll("#presets button").forEach(b=>b.classList.toggle("on",MULTI&&SEL.length?SEL.includes(b.dataset.p):b.dataset.p===activePreset));
+  const note=document.getElementById("presetNote");
+  note.textContent=activePreset==="Baseline"?(MULTI?"Pick two or more presets to combine them.":"Baseline: no shocks. Pick a preset or move a lever."):activePreset==="Custom"?"Custom scenario. Changed levers are highlighted.":PRESET_MAP[activePreset]?activePreset+": "+PRESET_MAP[activePreset].desc:"Combined: "+activePreset+". Levers from each preset are merged"+(MULTI?"; see the comparison table.":".");
+}
+let SEL=[], MULTI=false, COMBO={overlap:[],clamped:[]};
+function combine(names,mode){
+  const out={},cnt={},ord={low:0,med:1,high:2};
+  names.forEach(n=>{const set=PRESET_MAP[n].set;for(const k in set){const v=set[k];cnt[k]=(cnt[k]||0)+1;
+    if(typeof v==="number"){if(k==="persist")out[k]=Math.max(k in out?out[k]:0,v);else if(!(k in out))out[k]=v;else out[k]=mode==="max"?(Math.abs(v)>Math.abs(out[k])?v:out[k]):out[k]+v;}
+    else if(k==="wages")out[k]=(k in out&&ord[out[k]]>ord[v])?out[k]:v;
+    else out[k]=v;}});
+  const lab={};LEVERS.forEach(g=>g.items.forEach(x=>lab[x.k]=x));
+  const overlap=Object.keys(cnt).filter(k=>cnt[k]>1&&k!=="persist"&&typeof out[k]==="number").map(k=>lab[k]?lab[k].l:k);
+  const clamped=[];Object.keys(out).forEach(k=>{const x=lab[k];if(x&&x.min!==undefined&&typeof out[k]==="number"){const c=Math.min(x.max,Math.max(x.min,out[k]));if(Math.abs(c-out[k])>1e-9)clamped.push(x.l);}});
+  return {set:out,overlap,clamped};
+}
+function applyCombo(){
+  if(!SEL.length){applyPreset("Baseline",true);return;}
+  COMBO=combine(SEL,document.getElementById("multiHow").value);
+  state=Object.assign({},DEFAULTS,COMBO.set);activePreset=SEL.length===1?SEL[0]:SEL.join(" + ");syncControls();update();
+}
+function applyPreset(name,force){
+  if(MULTI&&!force&&name!=="Baseline"){const i=SEL.indexOf(name);if(i>=0)SEL.splice(i,1);else SEL.push(name);applyCombo();return;}
+  if(name==="Baseline")SEL=[];
+  state=Object.assign({},DEFAULTS,name==="Baseline"?{}:PRESET_MAP[name].set);activePreset=name;syncControls();update();}
+function updateCompare(s){
+  const panel=document.getElementById("cmpPanel");
+  if(!MULTI||SEL.length<2){panel.hidden=true;return;}
+  panel.hidden=false;
+  const lvl=g=>g.slice(1).reduce((a,x)=>a*(1+x/100),1);
+  const row=(name,r,bold)=>`<tr${bold?' style="font-weight:600"':''}><td style="white-space:normal;min-width:160px">${name}</td><td class="num">${sg((lvl(r.gdp)/lvl(BASE.gdp)-1)*100)}%</td><td class="num">${f1(Math.max(...r.cpi))}%</td><td class="num">${Math.max(...r.rate).toFixed(2)}%</td><td class="num">${f1(Math.max(...r.unemp))}%</td><td class="num">${f1(r.debt[4])}%</td><td class="num">${r.headroom.stab<0?"−":""}£${Math.abs(r.headroom.stab).toFixed(0)}bn</td></tr>`;
+  let h=`<thead><tr><th></th><th class="num">GDP 2030</th><th class="num">CPI peak</th><th class="num">Bank Rate peak</th><th class="num">Unemployment peak</th><th class="num">Debt 2030</th><th class="num">Stability headroom</th></tr></thead><tbody>`;
+  h+=row("Central path",run(Object.assign({},DEFAULTS,{hroom:state.hroom})),false);
+  SEL.forEach(n=>{h+=row(n,run(Object.assign({},DEFAULTS,PRESET_MAP[n].set,{hroom:state.hroom})),false);});
+  h+=row("Combined",s,true);
+  document.getElementById("cmpTable").innerHTML=h+"</tbody>";
+  const how=document.getElementById("multiHow").value==="add"?"Effects are added together, lever by lever.":"Where presets set the same lever, the stronger setting is used.";
+  document.getElementById("cmpNote").textContent=how+(COMBO.overlap.length?` Set by more than one preset: ${COMBO.overlap.join(", ")}${document.getElementById("multiHow").value==="add"?" (check this is not double counting the same shock)":""}.`:"")+(COMBO.clamped.length?` Beyond the slider's range (the model uses the full value; the slider shows its end stop): ${COMBO.clamped.join(", ")}.`:"")+" Settings that are choices rather than amounts (MPC stance, QE, bank buffers) take the last preset picked; pay second-round effects take the strongest.";
+}
+function buildPresets(){
+  const h=document.getElementById("presets");
+  PRESETS.forEach(grp=>{
+    const g=document.createElement("div");g.className="presetgrp";g.innerHTML=`<span>${grp.g}</span><div class="presets"></div>`;
+    const row=g.querySelector(".presets");
+    grp.items.forEach(x=>{const b=document.createElement("button");b.type="button";b.textContent=x[0];b.dataset.p=x[0];b.title=x[2];b.onclick=()=>applyPreset(x[0]);row.appendChild(b);});
+    h.appendChild(g);
+  });
+  document.getElementById("resetBtn").onclick=()=>applyPreset("Baseline");
+  document.getElementById("multiMode").onchange=e=>{MULTI=e.target.checked;document.getElementById("multiHow").hidden=!MULTI;SEL=MULTI&&PRESET_MAP[activePreset]?[activePreset]:[];if(MULTI)applyCombo();else{syncControls();update();}};
+  document.getElementById("multiHow").onchange=()=>applyCombo();
+}
+function bindControls(){
+  const sp=document.getElementById("spread");sp.value=spread;document.getElementById("spread-o").textContent=fmtSpread(spread);
+  sp.addEventListener("input",e=>{spread=+e.target.value;document.getElementById("spread-o").textContent=fmtSpread(spread);updateBiz(run(state));});
+}
+let spread=2.75;
+const SECTORS=[
+  {n:"Consumer discretionary and retail",w:{g:1.5,i:-0.8,o:-0.3,pi:-0.4,h:0.3,sup:0.5}},
+  {n:"Hospitality and social care staffing",w:{g:0.6,pi:-0.3,migr:0.6,ws:-0.8,sup:0.3}},
+  {n:"Universities and education exports",w:{stu:1.0,g:0.2}},
+  {n:"Housing, construction and property",w:{g:1.0,i:-1.5,gilt:-0.6,h:1.0,cr:-0.8,pinv:1.0}},
+  {n:"Energy-intensive manufacturing",w:{g:0.8,o:-0.7,fx:-0.3,x:0.3}},
+  {n:"Oil, gas and energy producers",w:{o:0.8,g:0.2}},
+  {n:"Banks and lenders",w:{i:0.6,g:0.6,cr:0.3,h:0.2}},
+  {n:"Public-sector suppliers",w:{sp:2.0,pinv:2.0,gilt:-0.3}},
+  {n:"Tech and IT consultancy",w:{g:1.5,i:-0.5,q:2.0,inv:0.1}},
+  {n:"Exporters",w:{x:1.0,g:0.3,fx:-0.8}}
+];
+function updateBiz(s){
+  document.getElementById("bizScenName").textContent=activePreset==="Custom"?"Custom scenario":activePreset;
+  const d=s.dev, idx=[1,2]; // 2027, 2028
+  const avg=a=>(a[1]+a[2])/2;
+  const drivers={g:avg(d.g),i:avg(d.i),o:avg(d.o)/10,pi:avg(d.pi),gilt:avg(d.gilt),q:avg(d.q),sp:state.spend,x:state.global-0.1*state.tariff,fx:(s.dev.fx[1]+s.dev.fx[2])/20,h:(s.links.hTot[1]+s.links.hTot[2])/20,cr:(s.links.crTot[1]+s.links.crTot[2])/200,migr:state.migr/100,stu:state.stu/100,ws:state.wshock,sup:state.support,pinv:state.pubinv,inv:state.inv};
+  const csY=s.links.crTot.map(v=>v/100), cs=Math.max(...csY);
+  // tiles
+  const realB=BASE.wages.map((w,t)=>w-BASE.cpi[t]), realS=s.wages.map((w,t)=>w-s.cpi[t]);
+  let bi=100,si=100;const tb=[],ts=[];
+  for(let t=0;t<5;t++){bi*=1+(2*BASE.gdp[t]-0.5*(BASE.rate[t]-3.75))/100;si*=1+(2*s.gdp[t]-0.5*(s.rate[t]-3.75)+d.q[t])/100;tb.push(bi);ts.push(si);}
+  const peakCPI=Math.max(...s.cpi), peakRate=Math.max(...s.rate);
+  const tile=(k,v,dd,pill)=>`<div class="tile"><span class="k">${k}</span><span class="v">${v}</span><span class="d">${dd}</span>${pill?`<span>${pill}</span>`:""}</div>`;
+  const pill=(x,goodIfUp,th=0.1)=>x>th?`<span class="pill ${goodIfUp?"good":"bad"}">${goodIfUp?"Better":"Worse"} than baseline</span>`:x<-th?`<span class="pill ${goodIfUp?"bad":"good"}">${goodIfUp?"Worse":"Better"} than baseline</span>`:`<span class="pill neu">In line with baseline</span>`;
+  const realAvg=(realS[1]+realS[2])/2, realBAvg=(realB[1]+realB[2])/2;
+  document.getElementById("bizTiles").innerHTML=
+    tile("Peak CPI inflation",f1(peakCPI)+"%",`Baseline peak ${f1(Math.max(...BASE.cpi))}%. Drives input costs and pay claims.`,pill(peakCPI-Math.max(...BASE.cpi),false))+
+    tile("Peak Bank Rate",peakRate.toFixed(2)+"%",`SME loans around ${(peakRate+spread+cs).toFixed(2)}% at your ${spread.toFixed(2)}pp spread${Math.abs(cs)>=0.05?` plus up to ${Math.round(cs*100)}bp of wider lending spreads`:""}.`,pill(peakRate-Math.max(...BASE.rate),false))+
+    tile("RPI-linked costs, 2027",f1(s.rpi[1])+"%",`Index-linked contracts, fares and leases. Baseline ${f1(BASE.rpi[1])}%; CPI in this scenario ${f1(s.cpi[1])}%.`,pill(s.rpi[1]-BASE.rpi[1],false))+
+    tile("Real pay growth, 2027–28",sg(realAvg)+"%",`Household spending power. Baseline ${sg(realBAvg)}%.`,pill(realAvg-realBAvg,true))+
+    tile("Tech and consultancy demand, 2030",ts[4].toFixed(1),`Index, 2025 = 100. Baseline ${tb[4].toFixed(1)}. Heuristic proxy for discretionary change budgets.`,pill(ts[4]-tb[4],true,0.3));
+  // sectors
+  const scored=SECTORS.map(x=>{let sc=0;for(const k in x.w)sc+=x.w[k]*(drivers[k]||0);return {n:x.n,sc};});
+  const mx=Math.max(0.5,...scored.map(x=>Math.abs(x.sc)));
+  document.getElementById("sectorTable").innerHTML=`<thead><tr><th>Sector</th><th>Signal</th><th class="num">Score</th></tr></thead><tbody>`+
+    scored.map(x=>{const cls=x.sc>0.15?"good":x.sc<-0.15?"bad":"neu",lab=x.sc>0.15?"Tailwind":x.sc<-0.15?"Headwind":"Neutral";
+      return `<tr><td>${x.n}</td><td><span class="pill ${cls}">${lab}</span></td><td class="num">${sg(x.sc)} <span class="bar" style="width:${Math.round(Math.abs(x.sc)/mx*40)}px;background:var(--${cls==="neu"?"band":cls})"></span></td></tr>`}).join("")+`</tbody>`;
+  // costs
+  document.getElementById("costTable").innerHTML=`<thead><tr><th></th>${YEARS.map(y=>`<th class="num">${y}</th>`).join("")}</tr></thead><tbody>`+
+    `<tr><td>Bank Rate, scenario</td>${s.rate.map(v=>`<td class="num">${v.toFixed(2)}</td>`).join("")}</tr>`+
+    `<tr><td>SME loan rate, scenario</td>${s.rate.map((v,t)=>`<td class="num">${(v+spread+csY[t]).toFixed(2)}</td>`).join("")}</tr>`+
+    `<tr><td>SME loan rate, baseline</td>${BASE.rate.map(v=>`<td class="num">${(v+spread).toFixed(2)}</td>`).join("")}</tr>`+
+    `<tr><td>Interest on £100k a year, change</td>${s.rate.map((v,t)=>{const dd=(v-BASE.rate[t]+csY[t])*1000;return `<td class="num ${dd>5?"up":dd<-5?"dn":""}">${(dd>=0?"+£":"−£")+Math.abs(Math.round(dd)).toLocaleString("en-GB")}</td>`}).join("")}</tr></tbody>`;
+  const c=charts.biz;
+  if(c){c.data.datasets[0].data=tb;c.data.datasets[1].data=ts;c.update();}
+  else charts.biz=new Chart(document.getElementById("bizChart"),{type:"line",data:{labels:YEARS,datasets:[ds("Baseline",tb,css("--accent"),[],2),ds("Scenario",ts,css("--scen"),[],2.5)]},
+    options:Object.assign(baseOpts(""),{plugins:{legend:{display:false},title:{display:true,text:"Tech and consultancy demand index (2025 = 100)",color:css("--muted"),font:{family:"IBM Plex Sans",size:12,weight:"500"},align:"start"},tooltip:{mode:"index",intersect:false}}})});
+}
+
+// TABS
+const tabs=document.querySelectorAll("nav button");
+function show(v){
+  tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.view===v?"true":"false"));
+  document.querySelectorAll("[data-panel]").forEach(p=>p.hidden=p.id!=="view-"+v);
+  try{localStorage.setItem("ukmm-tab",v);}catch(e){}
+  Object.values(charts).forEach(c=>c.resize());
+}
+tabs.forEach(b=>b.addEventListener("click",()=>show(b.dataset.view)));
+
+function rebuildAll(){
+  Chart.defaults.font.family="IBM Plex Sans";
+  if(charts.biz){charts.biz.destroy();delete charts.biz;}
+  buildOutlook();buildScenCharts();buildLR();update();buildAcc();buildParties();
+}
+document.getElementById("uncBtn").onclick=()=>{const b=document.getElementById("uncBtn");b.textContent="Working…";setTimeout(()=>{UNC={key:JSON.stringify(state),res:uncertainty(state,120)};b.textContent="Show the range for this scenario";update();},20);};
+buildLevers();buildPresets();bindControls();syncControls();rebuildAll();
+let start="now";
+const h=(location.hash||"").slice(1);
+try{start=localStorage.getItem("ukmm-tab")||start;}catch(e){}
+if(["now","outlook","scen","biz","hh","lr","parties","acc","notes"].includes(h))start=h;
+show(start);
+if(window.matchMedia)window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",rebuildAll);
+new MutationObserver(rebuildAll).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+import pandas as pd, numpy as np, json
+from m2 import *
+ev=json.load(open('eval_out.json'))
+d=prep(RAW); m=fit(d)
+T=d.index[-1]; H=18; idx=pd.period_range(T+1,T+H,freq='Q')   # 2026Q3..2030Q4
+oil=np.r_[91.0, np.full(H-1,100.0)]; lo=np.log(oil)*100
+lfx=np.full(H,np.log(1.345)*100)
+lhe=np.r_[d.lhe.iloc[-1]+np.log(1.13)*100, d.lhe.iloc[-1]+np.log(1.13*1.04)*100, np.full(H-2,d.lhe.iloc[-1]+np.log(1.13*1.04)*100)]
+# add-factor so 2026Q3 CPI ~3.1 (Jul 2.9, Aug 3.1)
+def run(af):
+    return simulate(m,d,H,lo,lfx,lhe,{idx[0]:af})
+# nowcast: 2026Q3 GDP growth 0.5% (July monthly GDP carry-over 0.6%, September flash PMI 51.7 implies about 0.3%; weights 2/3, 1/3)
+NOWCAST=0.5
+def run(af,gf=0.0):
+    return simulate(m,d,H,lo,lfx,lhe,{idx[0]:af},{idx[0]:gf})
+lo_g,hi_g=-3,3
+for _ in range(40):
+    mg=(lo_g+hi_g)/2; g0=run(0.0,mg).g[idx[0]]
+    if g0>NOWCAST: hi_g=mg
+    else: lo_g=mg
+gaf=mg
+lo_af,hi_af=-2,2
+for _ in range(40):
+    mid=(lo_af+hi_af)/2; c=run(mid,gaf).cpi[idx[0]]
+    if c>3.1: hi_af=mid
+    else: lo_af=mid
+af=mid; e=run(af,gaf); e['gyy']=gyy(e)
+q=e.loc[idx,['g','gyy','cpi','u','i','gap','dp']].round(3); print(q)
+full=e.loc[pd.period_range('2026Q1','2030Q4',freq='Q')]
+yrs=[2026,2027,2028,2029,2030]
+lvl=(1+e.g/100).cumprod()
+ann_g=[float((lvl[e.index.year==y].mean()/lvl[e.index.year==y-1].mean()-1)*100) for y in yrs]
+ann=lambda c: [float(e[c][e.index.year==y].mean()) for y in yrs]
+end=lambda c: [float(e[c][pd.Period(f"{y}Q4")]) for y in yrs]
+model={'gdp':ann_g,'cpi':ann('cpi'),'unemp':ann('u'),'rate':end('i')}
+print('model annual',{k:[round(x,2) for x in v] for k,v in model.items()})
+# naive: last observed
+naive={'gdp':[1.2]*5,'cpi':[3.1]*5,'unemp':[4.9]*5,'rate':[3.75]*5}
+W=ev['W']; wmap={'gdp':W['gyy'],'cpi':W['cpi'],'unemp':W['u'],'rate':W['i']}
+stat={k:[wmap[k]*model[k][t]+(1-wmap[k])*naive[k][t] for t in range(5)] for k in model}
+# rate anchor = market pricing (21 Sep 2026: ~65% chance of a November hike, about 4.2% by mid-2027; 2028-30 extrapolated as a gently falling curve)
+MARKET_RATE=[3.95,4.15,3.95,3.85,3.80]
+ext={'gdp':[1.2,1.1,1.6,1.6,1.5],'cpi':[3.1,3.4,2.1,2.0,2.0],'unemp':[4.9,5.1,4.9,4.6,4.4],'rate':MARKET_RATE}
+# weight on external rises with horizon (our evaluation covers up to 3 years)
+wext=[0.5,0.5,0.5,0.75,0.75]
+central={k:[round(wext[t]*ext[k][t]+(1-wext[t])*stat[k][t],2) for t in range(5)] for k in model}
+print('stat',{k:[round(x,2) for x in v] for k,v in stat.items()}); print('central',central)
+# band sigma per year: combined RMSE at horizon of year midpoint (Q3 2026 origin -> h)
+RM=ev['RM']
+def sig(v,hs):
+    arr=RM[v]; return float(np.mean([arr[min(h,12)-1] for h in hs]))
+hs={2026:[1,2],2027:[3,4,5,6],2028:[7,8,9,10],2029:[11,12,12,12],2030:[12,12,12,12]}
+growth=lambda: None
+sigma={'gdp':[sig('gyy',hs[y])*(0.5 if y==2026 else 0.8) for y in yrs],   # annual-average growth errors smaller than y/y quarterly
+       'cpi':[sig('cpi',hs[y]) for y in yrs],'unemp':[sig('u',hs[y]) for y in yrs],'rate':[sig('i',[hs[y][-1]]) for y in yrs]}
+sigma={k:[round(x,2) for x in v] for k,v in sigma.items()}
+print('sigma',sigma)
+# state for JS: last 8 quarters of history
+hist=d.loc[d.index[-8]:,['gap','dp','lp','i','u','cpi','lo','lfx','lhe','g']].round(5)
+state={'q':[str(p) for p in hist.index],**{c:hist[c].tolist() for c in hist},
+ 'rstar':float(d.rstar.iloc[-1]),'ustar':float(d.ustar.iloc[-1]),'gpot':float(d.gpot.iloc[-1]),
+ 'seas':{str(k):float(v) for k,v in (d.lp.diff()-d.dp).groupby(d.sq).mean().items()},'af':af,
+ 'path':{'q':[str(p) for p in idx],'lo':lo.round(4).tolist(),'lfx':lfx.round(4).tolist(),'lhe':np.array(lhe).round(4).tolist()},
+ 'ymeanG0':float(lvl[e.index.year==2025].mean()),'gaf':gaf,'nowcast':NOWCAST}
+coef={k:{kk:round(float(vv),5) for kk,vv in m[k].params.items()} for k in m}
+coef['RG']=RG; coef['OILD']=OILD
+se={k:round(float(np.sqrt(m[k].scale)),3) for k in m}; r2={k:round(float(m[k].rsquared),3) for k in m}
+tv={k:{kk:round(float(vv),2) for kk,vv in m[k].tvalues.items()} for k in m}
+out={'coef':coef,'se':se,'r2':r2,'t':tv,'state':state,'model_annual':model,'stat':stat,'ext':ext,'central':central,'sigma':sigma,'W':W,'wext':wext,
+     'RM':{k:RM[k] for k in ['gyy','gyy_naive','cpi','cpi_naive','cpi_model','u','u_model','i','i_model','i_naive']},'CALM':ev['CALM'],'bt':ev['bt'],'nobs':{k:int(m[k].nobs) for k in m},
+     'base_q':{c:[round(float(x),4) for x in e.loc[idx,c]] for c in ['g','cpi','u','i','gap']}}
+json.dump(out,open('model_export.json','w'))
+print(json.dumps(coef))
