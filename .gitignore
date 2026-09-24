@@ -18,3 +18,7 @@ Thumbs.db
 
 # ingested data vintages are reproducible, keep the manifest and normalised CSVs
 model/data/vintages/*/raw/
+
+# scratch from source probing
+model/[a-z].json
+model/[a-z].csv
