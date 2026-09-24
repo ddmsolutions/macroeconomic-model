@@ -1,3 +1,4 @@
+import os
 import pandas as pd, numpy as np, statsmodels.api as sm, warnings; warnings.filterwarnings('ignore')
 from statsmodels.tsa.filters.hp_filter import hpfilter
 # Data source. By default the model runs on the most recent ingested vintage
@@ -20,7 +21,16 @@ def _load_panel():
     d.index = pd.PeriodIndex(d.index, freq='Q')
     return d, 'static uk_quarterly.csv'
 
+# Estimation sample start. The UK adopted inflation targeting in October 1992, so the
+# Phillips curve here (which subtracts a 0.5 quarterly anchor, i.e. assumes a 2% target)
+# is only coherent from 1993 on. Ingested vintages reach back to 1989Q1, but including
+# 1989-92 costs 38% on CPI RMSE at h=8 and 22% at h=12 while helping GDP, because it
+# blends two monetary regimes. See notes/estimation-sample.md.
+SAMPLE_START = os.environ.get('UKMM_START', '1993Q1')
+
 RAW, PANEL_SOURCE = _load_panel()
+if SAMPLE_START and SAMPLE_START.lower() not in ('none', 'all'):
+    RAW = RAW.loc[pd.Period(SAMPLE_START, 'Q'):]
 COV=set(pd.period_range('2020Q1','2021Q4',freq='Q')); COV2=set(pd.period_range('2020Q1','2022Q2',freq='Q'))
 L=lambda s,k=1: s.shift(k)
 RG=-0.07      # calibrated: real-rate gap effect on output gap (BoE transmission)
