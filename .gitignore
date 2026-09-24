@@ -22,3 +22,5 @@ model/data/vintages/*/raw/
 # scratch from source probing
 model/[a-z].json
 model/[a-z].csv
+
+index.html.bak
