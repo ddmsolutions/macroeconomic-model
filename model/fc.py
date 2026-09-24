@@ -1,18 +1,31 @@
 import pandas as pd, numpy as np, json
 from m2 import *
+from bt2 import prepx, fitw, simw
+
+# WAGE: endogenise pay and use the wage-augmented Phillips curve (pcw) instead of pc.
+#   False -> m2.simulate, the four-equation system. Reproduces the published baseline.
+#   True  -> bt2.simw, adding the wage equation and closing the wage-price loop.
+# See output/2026-09-24_wage-equation-wiring.md for the backtest evidence before switching.
+WAGE = False
+
 ev=json.load(open('eval_out.json'))
-d=prep(RAW); m=fit(d)
+if WAGE:
+    d=prepx(RAW); m=fitw(d)
+    sim=lambda H,lo,lfx,lhe,addf,gaf: simw(m,d,H,lo,lfx,lhe,True,addf,gaf)
+else:
+    d=prep(RAW); m=fit(d)
+    sim=lambda H,lo,lfx,lhe,addf,gaf: simulate(m,d,H,lo,lfx,lhe,addf,gaf)
 T=d.index[-1]; H=18; idx=pd.period_range(T+1,T+H,freq='Q')   # 2026Q3..2030Q4
 oil=np.r_[91.0, np.full(H-1,100.0)]; lo=np.log(oil)*100
 lfx=np.full(H,np.log(1.345)*100)
 lhe=np.r_[d.lhe.iloc[-1]+np.log(1.13)*100, d.lhe.iloc[-1]+np.log(1.13*1.04)*100, np.full(H-2,d.lhe.iloc[-1]+np.log(1.13*1.04)*100)]
 # add-factor so 2026Q3 CPI ~3.1 (Jul 2.9, Aug 3.1)
 def run(af):
-    return simulate(m,d,H,lo,lfx,lhe,{idx[0]:af})
+    return sim(H,lo,lfx,lhe,{idx[0]:af},None)
 # nowcast: 2026Q3 GDP growth 0.5% (July monthly GDP carry-over 0.6%, September flash PMI 51.7 implies about 0.3%; weights 2/3, 1/3)
 NOWCAST=0.5
 def run(af,gf=0.0):
-    return simulate(m,d,H,lo,lfx,lhe,{idx[0]:af},{idx[0]:gf})
+    return sim(H,lo,lfx,lhe,{idx[0]:af},{idx[0]:gf})
 lo_g,hi_g=-3,3
 for _ in range(40):
     mg=(lo_g+hi_g)/2; g0=run(0.0,mg).g[idx[0]]
@@ -56,18 +69,19 @@ sigma={'gdp':[sig('gyy',hs[y])*(0.5 if y==2026 else 0.8) for y in yrs],   # annu
 sigma={k:[round(x,2) for x in v] for k,v in sigma.items()}
 print('sigma',sigma)
 # state for JS: last 8 quarters of history
-hist=d.loc[d.index[-8]:,['gap','dp','lp','i','u','cpi','lo','lfx','lhe','g']].round(5)
+hcols=['gap','dp','lp','i','u','cpi','lo','lfx','lhe','g']+(['pay'] if WAGE else [])
+hist=d.loc[d.index[-8]:,hcols].round(5)
 state={'q':[str(p) for p in hist.index],**{c:hist[c].tolist() for c in hist},
  'rstar':float(d.rstar.iloc[-1]),'ustar':float(d.ustar.iloc[-1]),'gpot':float(d.gpot.iloc[-1]),
  'seas':{str(k):float(v) for k,v in (d.lp.diff()-d.dp).groupby(d.sq).mean().items()},'af':af,
  'path':{'q':[str(p) for p in idx],'lo':lo.round(4).tolist(),'lfx':lfx.round(4).tolist(),'lhe':np.array(lhe).round(4).tolist()},
- 'ymeanG0':float(lvl[e.index.year==2025].mean()),'gaf':gaf,'nowcast':NOWCAST}
+ 'ymeanG0':float(lvl[e.index.year==2025].mean()),'gaf':gaf,'nowcast':NOWCAST,'wage':WAGE}
 coef={k:{kk:round(float(vv),5) for kk,vv in m[k].params.items()} for k in m}
 coef['RG']=RG; coef['OILD']=OILD
 se={k:round(float(np.sqrt(m[k].scale)),3) for k in m}; r2={k:round(float(m[k].rsquared),3) for k in m}
 tv={k:{kk:round(float(vv),2) for kk,vv in m[k].tvalues.items()} for k in m}
 out={'coef':coef,'se':se,'r2':r2,'t':tv,'state':state,'model_annual':model,'stat':stat,'ext':ext,'central':central,'sigma':sigma,'W':W,'wext':wext,
      'RM':{k:RM[k] for k in ['gyy','gyy_naive','cpi','cpi_naive','cpi_model','u','u_model','i','i_model','i_naive']},'CALM':ev['CALM'],'bt':ev['bt'],'nobs':{k:int(m[k].nobs) for k in m},
-     'base_q':{c:[round(float(x),4) for x in e.loc[idx,c]] for c in ['g','cpi','u','i','gap']}}
+     'base_q':{c:[round(float(x),4) for x in e.loc[idx,c]] for c in ['g','cpi','u','i','gap']+(['pay'] if WAGE else [])}}
 json.dump(out,open('model_export.json','w'))
 print(json.dumps(coef))
