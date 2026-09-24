@@ -16,7 +16,7 @@ def fitw(d):
     Xh=pd.DataFrame({'const':1.0,'w1':L(d.pay),'hi':np.maximum(0,L(d.cpi)-4),'ug1':L(d.u-d.ustar),'dinact':L(d.dinact)})
     m['wh']=ols(d.pay,Xh,EX)
     return m
-def simw(m,d,H,lo=None,lfx=None,lhe=None,wage=True,addf=None,gaf=None):
+def simw(m,d,H,lo=None,lfx=None,lhe=None,wage=True,addf=None,gaf=None,kcpi=None):
     T=d.index[-1]; idx=pd.period_range(T+1,T+H,freq='Q')
     e=pd.concat([d,pd.DataFrame(index=idx)])
     for c in ['rstar','ustar','gpot']: e[c]=e[c].ffill()
@@ -31,7 +31,9 @@ def simw(m,d,H,lo=None,lfx=None,lhe=None,wage=True,addf=None,gaf=None):
     for p in idx:
         gap=is_.gap1*e.gap.shift(1)[p]+is_.gap2*e.gap.shift(2)[p]+RG*(e.i-e.cpi-e.rstar).shift(2)[p]+OILD*e.doil.shift(1)[p]+(0 if gaf is None else gaf.get(p,0))
         e.loc[p,'gap']=gap
-        infl = max(0.0,e.cpi.shift(1)[p]-4) if 'hi' in w.index else e.cpi.shift(1)[p]
+        # the kink reads kcpi when supplied (realised inflation), else the model's own forecast
+        kc = e.cpi.shift(1)[p] if kcpi is None else float(kcpi.get(p-1, e.cpi.shift(1)[p]))
+        infl = max(0.0,kc-4) if 'hi' in w.index else e.cpi.shift(1)[p]
         pw=w.const+w.w1*e.pay.shift(1)[p]+w[('hi' if 'hi' in w.index else 'cpi1')]*infl+w.ug1*(e.u-e.ustar).shift(1)[p]+w.dinact*e.dinact.shift(1)[p]
         e.loc[p,'pay']=pw
         x=pcX(e).loc[p]
