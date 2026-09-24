@@ -23,7 +23,34 @@ else:
 T=d.index[-1]; H=18; idx=pd.period_range(T+1,T+H,freq='Q')   # 2026Q3..2030Q4
 oil=np.r_[91.0, np.full(H-1,100.0)]; lo=np.log(oil)*100
 lfx=np.full(H,np.log(1.345)*100)
-lhe=np.r_[d.lhe.iloc[-1]+np.log(1.13)*100, d.lhe.iloc[-1]+np.log(1.13*1.04)*100, np.full(H-2,d.lhe.iloc[-1]+np.log(1.13*1.04)*100)]
+# Household energy. The first two quarters are NOT an assumption: Ofgem announced the cap
+# rising 13% from July 2026 and a further 4% from October, so 2026Q3 and 2026Q4 are published
+# fact. ENERGY controls only what happens AFTER the announced cap runs out.
+#   False    -> hold the cap flat past the announced window. This is the default and it is
+#               what the evidence supports (see notes/energy.md).
+#   'gas'    -> extrapolate from European wholesale gas via energy.py. In sample the gas
+#               equation is strong (R2 0.811, long-run pass-through 0.188, and R2 on the gas
+#               lag rising monotonically to 0.658 at four quarters, which is cap transmission
+#               showing up in the data). Out of sample it makes CPI WORSE: h=8 RMSE 1.569 vs
+#               1.272 flat, because the gas path itself has to be forecast and the
+#               pass-through coefficient roughly doubled after the cap went quarterly in 2022.
+#   'pinned' -> apply gas only for the quarters already determined by observed gas, flat
+#               beyond. A wash against flat (1.686/1.278/1.202 vs 1.687/1.272/1.208), so it
+#               buys complexity and no accuracy. Kept because it is the only non-harmful
+#               variant and it is the one to revisit against a gas futures curve.
+ENERGY = False
+
+_cap = [1.13, 1.13*1.04]
+lhe = np.r_[[d.lhe.iloc[-1]+np.log(c)*100 for c in _cap],
+            np.full(H-len(_cap), d.lhe.iloc[-1]+np.log(_cap[-1])*100)]
+if ENERGY:
+    import energy as _en
+    _ed = _en.load(); _em = _en.fit(_ed)
+    _yoy, _ndet = _en.project(_ed, _em, H)
+    _n = len(_cap) + (_ndet if ENERGY == 'pinned' else H)
+    for _q in range(len(_cap), min(_n, H)):
+        lhe[_q] = lhe[_q-4] + _yoy[_q]       # year-on-year rate onto the level four back
+    print('energy: %s, gas applied to quarters %d..%d of %d' % (ENERGY, len(_cap), min(_n,H)-1, H))
 def run(af):
     return sim(H,lo,lfx,lhe,{idx[0]:af},None)
 
