@@ -24,11 +24,26 @@ T=d.index[-1]; H=18; idx=pd.period_range(T+1,T+H,freq='Q')   # 2026Q3..2030Q4
 oil=np.r_[91.0, np.full(H-1,100.0)]; lo=np.log(oil)*100
 lfx=np.full(H,np.log(1.345)*100)
 lhe=np.r_[d.lhe.iloc[-1]+np.log(1.13)*100, d.lhe.iloc[-1]+np.log(1.13*1.04)*100, np.full(H-2,d.lhe.iloc[-1]+np.log(1.13*1.04)*100)]
-# add-factor so 2026Q3 CPI ~3.1 (Jul 2.9, Aug 3.1)
 def run(af):
     return sim(H,lo,lfx,lhe,{idx[0]:af},None)
-# nowcast: 2026Q3 GDP growth 0.5% (July monthly GDP carry-over 0.6%, September flash PMI 51.7 implies about 0.3%; weights 2/3, 1/3)
-NOWCAST=0.5
+
+# Nowcast for the first forecast quarter. nowcast.py computes the monthly GDP
+# carry-over and the quarterly CPI rate from published months; PMI is proprietary
+# and cannot be fetched, so it is blended in here by hand when available.
+# Set PMI_GROWTH=None to use the carry-over alone.
+PMI_GROWTH = 0.3        # Sept 2026 flash composite PMI 51.7 implies about this
+NOWCAST_OVERRIDE = None # set a number to bypass the computed nowcast entirely
+try:
+    import nowcast as _nc
+    _n = _nc.nowcast(pmi_growth=PMI_GROWTH)
+    NOWCAST  = _n['gdp']['growth'] if _n['gdp'] else 0.5
+    CPI_TGT  = _n['cpi']['rate']   if _n['cpi'] else 3.1
+    print('nowcast %s: GDP %+.2f%% (%d/3 months), CPI %.2f%% (%d/3 months)' % (
+        _n['gdp']['quarter'], NOWCAST, _n['gdp']['months_published'], CPI_TGT, _n['cpi']['months_published']))
+except Exception as _e:
+    NOWCAST, CPI_TGT = 0.5, 3.1
+    print('nowcast unavailable (%s), falling back to NOWCAST=%.2f CPI=%.2f' % (str(_e)[:60], NOWCAST, CPI_TGT))
+if NOWCAST_OVERRIDE is not None: NOWCAST = NOWCAST_OVERRIDE
 def run(af,gf=0.0):
     return sim(H,lo,lfx,lhe,{idx[0]:af},{idx[0]:gf})
 lo_g,hi_g=-3,3
@@ -40,7 +55,7 @@ gaf=mg
 lo_af,hi_af=-2,2
 for _ in range(40):
     mid=(lo_af+hi_af)/2; c=run(mid,gaf).cpi[idx[0]]
-    if c>3.1: hi_af=mid
+    if c>CPI_TGT: hi_af=mid
     else: lo_af=mid
 af=mid; e=run(af,gaf); e['gyy']=gyy(e)
 q=e.loc[idx,['g','gyy','cpi','u','i','gap','dp']].round(3); print(q)
@@ -80,7 +95,7 @@ state={'q':[str(p) for p in hist.index],**{c:hist[c].tolist() for c in hist},
  'rstar':float(d.rstar.iloc[-1]),'ustar':float(d.ustar.iloc[-1]),'gpot':float(d.gpot.iloc[-1]),
  'seas':{str(k):float(v) for k,v in (d.lp.diff()-d.dp).groupby(d.sq).mean().items()},'af':af,
  'path':{'q':[str(p) for p in idx],'lo':lo.round(4).tolist(),'lfx':lfx.round(4).tolist(),'lhe':np.array(lhe).round(4).tolist()},
- 'ymeanG0':float(lvl[e.index.year==2025].mean()),'gaf':gaf,'nowcast':NOWCAST,'wage':WAGE}
+ 'ymeanG0':float(lvl[e.index.year==2025].mean()),'gaf':gaf,'nowcast':NOWCAST,'cpi_target':CPI_TGT,'wage':WAGE}
 coef={k:{kk:round(float(vv),5) for kk,vv in m[k].params.items()} for k in m}
 coef['RG']=RG; coef['OILD']=OILD
 se={k:round(float(np.sqrt(m[k].scale)),3) for k in m}; r2={k:round(float(m[k].rsquared),3) for k in m}

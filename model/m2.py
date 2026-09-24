@@ -5,10 +5,28 @@ COV=set(pd.period_range('2020Q1','2021Q4',freq='Q')); COV2=set(pd.period_range('
 L=lambda s,k=1: s.shift(k)
 RG=-0.07      # calibrated: real-rate gap effect on output gap (BoE transmission)
 OILD=-0.003   # calibrated: y/y oil % effect on output gap (real income)
+# ONESIDED: estimate the trends (gap, r*, u*, potential) using only data up to each
+# point, rather than smoothing across the whole sample. The two-sided HP filter is least
+# reliable at the end of the sample, which is exactly where the forecast starts, so the
+# gap seeding every simulation is the worst-estimated point in the series. Default False
+# keeps the published baseline; flip it and re-run eval3.py to see what it costs.
+ONESIDED = False
+
+def _hp1(x, lam):
+    """One-sided HP: value at t uses only data to t. Needs a burn-in before it settles."""
+    v = pd.Series(index=x.index, dtype=float)
+    for i in range(len(x)):
+        if i < 8: v.iloc[i] = x.iloc[:i+1].mean()
+        else:     v.iloc[i] = hpfilter(x.iloc[:i+1], lam)[1].iloc[-1]
+    return v
+
+def _trend(x, lam):
+    return _hp1(x, lam) if ONESIDED else hpfilter(x, lam)[1]
+
 def prep(d):
     d=d.copy()
     lvl=np.log((1+d.g/100).cumprod())*100
-    l2=lvl.where(~d.index.isin(COV)).interpolate(); tr=hpfilter(l2,1600)[1]
+    l2=lvl.where(~d.index.isin(COV)).interpolate(); tr=_trend(l2,1600)
     d['gap']=lvl-tr; d['gpot']=tr.diff()
     d['lo']=np.log(d.oil)*100; d['lfx']=np.log(d.usdgbp)*100
     d['doil']=d.lo-L(d.lo,4); d['dfx']=d.lfx-L(d.lfx,4)
@@ -17,8 +35,8 @@ def prep(d):
     d['sq']=pd.Series(d.index.quarter,index=d.index)
     d['dp']=dp-dp.groupby(d.sq).transform('mean')+dp.mean()   # SA q/q %
     d['rr']=d.i-d.cpi
-    d['rstar']=hpfilter(d.rr.where(~d.index.isin(COV)).interpolate(),10000)[1]
-    d['ustar']=hpfilter(d.u.where(~d.index.isin(COV)).interpolate(),1600)[1]
+    d['rstar']=_trend(d.rr.where(~d.index.isin(COV)).interpolate(),10000)
+    d['ustar']=_trend(d.u.where(~d.index.isin(COV)).interpolate(),1600)
     return d
 def ols(y,X,keep):
     s=pd.concat([y.rename('y'),X],axis=1).dropna(); s=s.loc[[p for p in s.index if keep(p)]]
