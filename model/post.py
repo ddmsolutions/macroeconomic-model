@@ -9,9 +9,9 @@ for v in ['gyy','cpi','u','i']:
         sc=np.mean([rm(w*R[R.h==h][v]+(1-w)*R[R.h==h]['n_'+v]) for h in (4,8)])
         if best is None or sc<best[1]: best=(w,sc)
     W[v]=best[0]
-    RM[v]=[round(rm(W[v]*R[R.h==h][v]+(1-W[v])*R[R.h==h]['n_'+v]),2) for h in range(1,13)]
-    RM[v+'_model']=[round(rm(R[R.h==h][v]),2) for h in range(1,13)]
-    RM[v+'_naive']=[round(rm(R[R.h==h]['n_'+v]),2) for h in range(1,13)]
+    RM[v]=[round(rm(W[v]*R[R.h==h][v]+(1-W[v])*R[R.h==h]['n_'+v]),2) for h in range(1,21)]
+    RM[v+'_model']=[round(rm(R[R.h==h][v]),2) for h in range(1,21)]
+    RM[v+'_naive']=[round(rm(R[R.h==h]['n_'+v]),2) for h in range(1,21)]
 print('weights',W); 
 for k,v in RM.items(): print(k,v)
 # calm-period RMSE (excl 2008-09 and 2022-23 shocks)

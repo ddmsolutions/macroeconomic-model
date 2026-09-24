@@ -77,8 +77,8 @@ def summarise(idx, keep, qs=(5, 25, 50, 75, 95)):
     out['_q'] = [str(p) for p in idx]
     return out
 
-if __name__ == '__main__':
-    N = int(sys.argv[1]) if len(sys.argv) > 1 else 2000
+def _cli_diag():
+    N = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 2000
     print('drawing %d paths from the estimated residual covariance...' % N)
     idx, keep, C, order, n = run(N)
     print('\nresidual correlation (%d common quarters):' % n)
@@ -104,3 +104,83 @@ if __name__ == '__main__':
               % (((a > 3) & (keep['i'][:, j] > 4)).mean() * 100))
     json.dump(S, open('stoch_bands.json', 'w'))
     print('\nwritten to stoch_bands.json')
+
+# ---------------------------------------------------------------------------
+# Annual bands for model_export.json, replacing bands.py
+# ---------------------------------------------------------------------------
+
+YRS = [2026, 2027, 2028, 2029, 2030]
+
+def _annual(e, ymeanG0):
+    """The four headline annuals, computed exactly as fc.py does."""
+    lvl = (1 + e.g / 100).cumprod()
+    base = {2026: ymeanG0}
+    out = {'gdp': [], 'cpi': [], 'unemp': [], 'rate': []}
+    for y in YRS:
+        prev = base.get(y) if y in base else lvl[e.index.year == y - 1].mean()
+        out['gdp'].append(float((lvl[e.index.year == y].mean() / prev - 1) * 100))
+        out['cpi'].append(float(e.cpi[e.index.year == y].mean()))
+        out['unemp'].append(float(e.u[e.index.year == y].mean()))
+        out['rate'].append(float(e.i[pd.Period('%dQ4' % y)]))
+    return out
+
+def bands(N=2000, seed=20260924, export='model_export.json'):
+    """Fan charts from the simulated distribution of the ANNUAL aggregates.
+
+    bands.py took quantiles of quarterly forecast errors and averaged them across the
+    horizons falling in each year. That is not the quantile of the annual average, and it
+    cannot represent a part-actual year, which is what the scale factors
+    ({'gyy': {2026: 0.35}, 'cpi': {2026: 0.3}, 'u': {2026: 0.5}} and the 0.8 on growth)
+    were correcting by hand.
+
+    Computing each path's annual aggregate and then taking quantiles handles both: 2026 is
+    narrow automatically because its first two quarters are actual and carry no shock.
+    """
+    m_exp = json.load(open(export))
+    st = m_exp['state']; ymeanG0 = st['ymeanG0']
+    lo  = np.array(st['path']['lo']);  lfx = np.array(st['path']['lfx']); lhe = np.array(st['path']['lhe'])
+    H   = len(lo)
+    idx0 = pd.Period(st['path']['q'][0], 'Q')
+    af, gaf = st['af'], st['gaf']
+
+    d = prep(RAW); m = fit(d)
+    C, order, n = resid_cov(m, d)
+    rng = np.random.default_rng(seed)
+    draws = {k: [] for k in ['gdp', 'cpi', 'unemp', 'rate']}
+    for _ in range(N):
+        S = rng.multivariate_normal(np.zeros(len(EQ)), C, size=H)
+        S[0, order.index('pc')] += af          # keep the nowcast anchoring of the first quarter
+        S[0, order.index('is')] += gaf
+        e = simulate_shocked(m, d, H, lo, lfx, lhe, S)
+        a = _annual(e, ymeanG0)
+        for k in draws: draws[k].append(a[k])
+    out = {}
+    for k, v in draws.items():
+        A = np.array(v)                         # (N, 5)
+        med = np.median(A, axis=0)
+        out[k] = {'p%02d' % q: np.round(np.percentile(A, q, axis=0) - med, 3).tolist()
+                  for q in (5, 25, 75, 95)}
+    m_exp['bands'] = out
+    m_exp['bands_method'] = {'source': 'stoch.py', 'draws': N, 'seed': seed,
+                             'basis': 'quantiles of simulated annual aggregates, as deviations from the simulated median'}
+    json.dump(m_exp, open(export, 'w'))
+    return out, draws
+
+
+if __name__ == '__main__':
+    nums = [a for a in sys.argv[1:] if a.isdigit()]
+    N = int(nums[0]) if nums else 2000
+    if '--bands' in sys.argv:
+        print('generating bands from %d simulated paths...' % N)
+        out, draws = bands(N)
+        hdr = '%-7s %8s %8s %8s %8s   (deviations from the simulated median)'
+        print(hdr % ('', 'p05', 'p25', 'p75', 'p95'))
+        for k in ['gdp', 'cpi', 'unemp', 'rate']:
+            for j, y in enumerate(YRS):
+                print('%-7s %8.2f %8.2f %8.2f %8.2f   %d' % (
+                    k if j == 0 else '', out[k]['p05'][j], out[k]['p25'][j],
+                    out[k]['p75'][j], out[k]['p95'][j], y))
+            print()
+        print('written to model_export.json[bands]')
+    else:
+        _cli_diag()

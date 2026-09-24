@@ -4,7 +4,7 @@ act=prep(RAW); act['gyy']=gyy(act)
 origins=[p for p in pd.period_range('2004Q4','2025Q2',freq='Q') if not (pd.Period('2019Q1')<=p<=pd.Period('2021Q4'))]
 rows=[]
 for T in origins:
-    d=prep(RAW.loc[:T]); m=fit(d); H=12; idx=pd.period_range(T+1,T+H,freq='Q')
+    d=prep(RAW.loc[:T]); m=fit(d); H=20; idx=pd.period_range(T+1,T+H,freq="Q")
     for cond in (False,True):
         lo=lfx=lhe=None
         if cond:

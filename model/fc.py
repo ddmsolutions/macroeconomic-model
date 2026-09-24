@@ -81,8 +81,8 @@ print('stat',{k:[round(x,2) for x in v] for k,v in stat.items()}); print('centra
 # band sigma per year: combined RMSE at horizon of year midpoint (Q3 2026 origin -> h)
 RM=ev['RM']
 def sig(v,hs):
-    arr=RM[v]; return float(np.mean([arr[min(h,12)-1] for h in hs]))
-hs={2026:[1,2],2027:[3,4,5,6],2028:[7,8,9,10],2029:[11,12,12,12],2030:[12,12,12,12]}
+    arr=RM[v]; return float(np.mean([arr[min(h,20)-1] for h in hs]))
+hs={2026:[1,2],2027:[3,4,5,6],2028:[7,8,9,10],2029:[11,12,13,14],2030:[15,16,17,18]}
 growth=lambda: None
 sigma={'gdp':[sig('gyy',hs[y])*(0.5 if y==2026 else 0.8) for y in yrs],   # annual-average growth errors smaller than y/y quarterly
        'cpi':[sig('cpi',hs[y]) for y in yrs],'unemp':[sig('u',hs[y]) for y in yrs],'rate':[sig('i',[hs[y][-1]]) for y in yrs]}
