@@ -3,15 +3,20 @@ from m2 import *
 from bt2 import prepx, fitw, simw
 
 # WAGE: endogenise pay and use the wage-augmented Phillips curve (pcw) instead of pc.
-#   False -> m2.simulate, the four-equation system. Reproduces the published baseline.
-#   True  -> bt2.simw, adding the wage equation and closing the wage-price loop.
-# See output/2026-09-24_wage-equation-wiring.md for the backtest evidence before switching.
+#   False  -> m2.simulate, the four-equation system. Reproduces the published baseline.
+#   'hi'   -> bt2.simw with the kinked wage equation, wages respond to inflation above 4%.
+#             Best CPI RMSE at h=8 (1.174 vs 1.208 base) and the only spec that beats a
+#             naive pay forecast at any horizon (h=4, 1.066 vs 1.143).
+#   True   -> bt2.simw with the linear wage equation. Dominated by 'hi'; kept for comparison.
+# Caveat before switching: the kink conditions on the model's OWN inflation forecast, so it
+# cannot rescue a bad inflation call. In the 2022 backtest it under-forecast pay worse than
+# the linear spec. See output/2026-09-24_wage-equation-wiring.md.
 WAGE = False
 
 ev=json.load(open('eval_out.json'))
 if WAGE:
     d=prepx(RAW); m=fitw(d)
-    sim=lambda H,lo,lfx,lhe,addf,gaf: simw(m,d,H,lo,lfx,lhe,True,addf,gaf)
+    sim=lambda H,lo,lfx,lhe,addf,gaf: simw(m,d,H,lo,lfx,lhe,WAGE,addf,gaf)
 else:
     d=prep(RAW); m=fit(d)
     sim=lambda H,lo,lfx,lhe,addf,gaf: simulate(m,d,H,lo,lfx,lhe,addf,gaf)
