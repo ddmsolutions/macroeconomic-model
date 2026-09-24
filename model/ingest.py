@@ -25,6 +25,7 @@ ONS = {   # name: (series id, dataset, topic path)
     'u'     : ('mgsx', 'lms',  'employmentandlabourmarket/peoplenotinwork/unemployment'),
     'pay'   : ('kai9', 'lms',  'employmentandlabourmarket/peopleinwork/earningsandworkinghours'),
     'inact' : ('lf2s', 'lms',  'employmentandlabourmarket/peoplenotinwork/economicinactivity'),
+    'he_yoy': ('d7gt', 'mm23', 'economy/inflationandpriceindices'),   # household energy: CPI 04.5 electricity, gas and other fuels, annual rate
 }
 BOE  = {'i': 'IUQABEDR', 'eri': 'XUQLBK67', 'usdgbp': 'XUQLUSS'}
 FRED = {'oil': 'DCOILBRENTEU'}
@@ -108,7 +109,22 @@ def run(rebuild_panel=False, stamp=None):
     if rebuild_panel: build_panel(vdir)
     return vdir
 
-def build_panel(vdir):
+def _he_index(yoy, base=100.0):
+    """Rebuild a household-energy level index from its annual rate.
+
+    The panel carries `he` as a level, but ONS publishes 04.5 as an annual rate. The
+    model only ever uses log differences of `he`, so the base is arbitrary; what has to
+    be right is the growth. Seed the first four quarters at the base, then compound each
+    quarter off the same quarter a year earlier.
+    """
+    import pandas as pd
+    idx = yoy.index; out = pd.Series(index=idx, dtype=float)
+    out.iloc[:4] = base
+    for i in range(4, len(idx)):
+        out.iloc[i] = out.iloc[i - 4] * (1 + yoy.iloc[i] / 100.0)
+    return out
+
+def build_panel(vdir, he_base=None):
     import pandas as pd
     cols = ['g', 'cpi', 'u', 'i', 'oil', 'usdgbp', 'p']
     data = {}
@@ -117,10 +133,16 @@ def build_panel(vdir):
         if not os.path.exists(fp): print('  missing %s, panel not rebuilt' % c); return None
         s = pd.read_csv(fp, index_col=0)['value']
         s.index = pd.PeriodIndex(s.index, freq='Q'); data[c] = s
+    hp = os.path.join(vdir, 'he_yoy.csv')
+    if os.path.exists(hp):
+        y = pd.read_csv(hp, index_col=0)['value']; y.index = pd.PeriodIndex(y.index, freq='Q')
+        data['he'] = _he_index(y, he_base or 100.0)
+        print('  he: rebuilt from CPI 04.5 annual rate, %d quarters from %s' % (len(y), y.index[0]))
+    else:
+        print('  he_yoy missing, panel will have no he column')
     df = pd.DataFrame(data).dropna(how='all')
     out = os.path.join(vdir, 'uk_quarterly.csv'); df.to_csv(out)
     print('  panel: %d quarters, %s .. %s -> %s' % (len(df), df.index[0], df.index[-1], out))
-    print('  NOTE: household energy (he) is not sourced here; carry it from the existing panel.')
     return out
 
 def list_vintages():

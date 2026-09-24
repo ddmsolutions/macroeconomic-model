@@ -95,6 +95,18 @@
   "last": "2026Q2",
   "last_value": 20.9
  },
+ "he_yoy": {
+  "source": "ons",
+  "locator": [
+   "d7gt",
+   "mm23",
+   "economy/inflationandpriceindices"
+  ],
+  "n": 150,
+  "first": "1989Q1",
+  "last": "2026Q2",
+  "last_value": -6.2
+ },
  "i": {
   "source": "boe",
   "locator": [
@@ -136,8 +148,8 @@
   "last_value": 94.15677966101696
  },
  "_meta": {
-  "fetched": "2026-09-24T16:44:36",
-  "ok": 12,
+  "fetched": "2026-09-24T18:29:28",
+  "ok": 13,
   "failed": 0
  }
 }

@@ -1,6 +1,26 @@
 import pandas as pd, numpy as np, statsmodels.api as sm, warnings; warnings.filterwarnings('ignore')
 from statsmodels.tsa.filters.hp_filter import hpfilter
-RAW=pd.read_csv('uk_quarterly.csv',index_col=0); RAW.index=pd.PeriodIndex(RAW.index,freq='Q')
+# Data source. By default the model runs on the most recent ingested vintage
+# (model/data/vintages/<date>/uk_quarterly.csv, written by ingest.py) and falls back
+# to the static uk_quarterly.csv if no vintage exists. Set UKMM_VINTAGE to a date to
+# pin a specific one, or to "static" to force the checked-in panel.
+def _load_panel():
+    import os, glob
+    here = os.path.dirname(os.path.abspath(__file__))
+    pin = os.environ.get('UKMM_VINTAGE', '').strip()
+    if pin.lower() != 'static':
+        vs = sorted(glob.glob(os.path.join(here, 'data', 'vintages', '*', 'uk_quarterly.csv')))
+        if pin: vs = [v for v in vs if pin in v]
+        if vs:
+            d = pd.read_csv(vs[-1], index_col=0)
+            d.index = pd.PeriodIndex(d.index, freq='Q')
+            PANEL_SOURCE = os.path.basename(os.path.dirname(vs[-1]))
+            return d.dropna(subset=['g', 'cpi', 'u', 'i', 'p']), 'vintage ' + PANEL_SOURCE
+    d = pd.read_csv(os.path.join(here, 'uk_quarterly.csv'), index_col=0)
+    d.index = pd.PeriodIndex(d.index, freq='Q')
+    return d, 'static uk_quarterly.csv'
+
+RAW, PANEL_SOURCE = _load_panel()
 COV=set(pd.period_range('2020Q1','2021Q4',freq='Q')); COV2=set(pd.period_range('2020Q1','2022Q2',freq='Q'))
 L=lambda s,k=1: s.shift(k)
 RG=-0.07      # calibrated: real-rate gap effect on output gap (BoE transmission)
